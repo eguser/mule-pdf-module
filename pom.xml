@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.mule.extension</groupId>
+  <artifactId>test-me</artifactId>
+  <version>0.0.1</version>
+  <packaging>mule-extension</packaging>
+  <name>TestMe Extension</name>
+
+  <parent>
+    <groupId>org.mule.extensions</groupId>
+    <artifactId>mule-modules-parent</artifactId>
+    <version>1.6.3</version>
+  </parent>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <pdfbox.version>3.0.2</pdfbox.version>
+    <mule.runtime.version>4.7.1</mule.runtime.version>
+    <mule.maven.plugin.version>4.2.0</mule.maven.plugin.version>
+    <muleJavaEeBomVersion>4.7.1</muleJavaEeBomVersion>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.mulesoft.munit.tools</groupId>
+        <artifactId>munit-maven-plugin</artifactId>
+        <version>${munit.version}</version>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+              <goal>coverage-report</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <coverage>
+            <runCoverage>true</runCoverage>
+            <formats>
+              <format>html</format>
+            </formats>
+          </coverage>
+          <runtimeVersion>${mule.runtime.version}</runtimeVersion>
+          <dynamicPorts>
+            <dynamicPort>http.port</dynamicPort>
+          </dynamicPorts>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mule</groupId>
+      <artifactId>mule-javaee-runtime-bom</artifactId>
+      <version>${muleJavaEeBomVersion}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.sdk</groupId>
+      <artifactId>mule-sdk-api</artifactId>
+      <version>0.8.3</version>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.mule</groupId>
+        <artifactId>mule-javaee-runtime-bom</artifactId>
+        <version>4.7.1</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <repositories>
+    <repository>
+      <id>anypoint-exchange-v3</id>
+      <name>Anypoint Exchange V3</name>
+      <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+</project>

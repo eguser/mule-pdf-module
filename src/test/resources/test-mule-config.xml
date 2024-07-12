@@ -1,0 +1,19 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:testme="http://www.mulesoft.org/schema/mule/testme"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+          http://www.mulesoft.org/schema/mule/testme http://www.mulesoft.org/schema/mule/testme/current/mule-testme.xsd">
+
+    <testme:config name="config" configId="configId">
+        <testme:connection requiredParameter="aValue" />
+    </testme:config>
+
+    <flow name="sayHiFlow">
+        <testme:say-hi person="Mariano Gonzalez"/>
+    </flow>
+
+    <flow name="retrieveInfoFlow">
+        <testme:retrieve-info config-ref="config"/>
+    </flow>
+
+</mule>
