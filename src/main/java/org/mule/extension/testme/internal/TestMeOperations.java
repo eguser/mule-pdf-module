@@ -16,8 +16,10 @@ public class TestMeOperations {
    * Example of an operation that uses the configuration and a connection instance to perform some action.
    */
   @MediaType(value = ANY, strict = false)
-  public String retrieveInfo(@Config TestMeConfiguration configuration, @Connection TestMeConnection connection){
-    return "Using Configuration [" + configuration.getConfigId() + "] with Connection id [" + connection.getId() + "]";
+  public String retrieveInfo(@Config TestMeConfiguration configuration//, 
+                             //@Connection TestMeConnection connection
+                             ){
+    return "Using Configuration [" + configuration.getConfigId() + "] with Connection id [" + "connection.getId()" + "]";
   }
 
   /**

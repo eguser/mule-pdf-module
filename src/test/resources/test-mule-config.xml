@@ -5,7 +5,7 @@
           http://www.mulesoft.org/schema/mule/testme http://www.mulesoft.org/schema/mule/testme/current/mule-testme.xsd">
 
     <testme:config name="config" configId="configId">
-        <testme:connection requiredParameter="aValue" />
+        <!-- <testme:connection requiredParameter="aValue" /> -->
     </testme:config>
 
     <flow name="sayHiFlow">

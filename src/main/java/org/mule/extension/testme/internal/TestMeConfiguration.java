@@ -9,7 +9,7 @@ import org.mule.runtime.extension.api.annotation.param.Parameter;
  * operations since they represent something core from the extension.
  */
 @Operations(TestMeOperations.class)
-@ConnectionProviders(TestMeConnectionProvider.class)
+//@ConnectionProviders(TestMeConnectionProvider.class)
 public class TestMeConfiguration {
 
   @Parameter
