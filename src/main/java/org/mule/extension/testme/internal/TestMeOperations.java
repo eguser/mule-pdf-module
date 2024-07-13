@@ -2,6 +2,7 @@ package org.mule.extension.testme.internal;
 
 import static org.mule.runtime.extension.api.annotation.param.MediaType.ANY;
 
+import org.mule.extension.testme.internal.config.TestMeConfiguration;
 import org.mule.runtime.extension.api.annotation.param.MediaType;
 import org.mule.runtime.extension.api.annotation.param.Config;
 import org.mule.runtime.extension.api.annotation.param.Connection;
@@ -19,7 +20,7 @@ public class TestMeOperations {
   public String retrieveInfo(@Config TestMeConfiguration configuration//, 
                              //@Connection TestMeConnection connection
                              ){
-    return "Using Configuration [" + configuration.getConfigId() + "] with Connection id [" + "connection.getId()" + "]";
+    return "Using Image Resolution of [" + configuration.getImageResolution() + "] DPI.";
   }
 
   /**

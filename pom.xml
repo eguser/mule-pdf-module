@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.mule.extension</groupId>
   <artifactId>test-me</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.6</version>
   <packaging>mule-extension</packaging>
   <name>TestMe Extension</name>
 

@@ -1,6 +1,7 @@
 package org.mule.extension.testme.internal;
 
 import org.mule.runtime.extension.api.annotation.Extension;
+import org.mule.extension.testme.internal.config.TestMeConfiguration;
 import org.mule.runtime.extension.api.annotation.Configurations;
 import org.mule.runtime.extension.api.annotation.dsl.xml.Xml;
 import org.mule.sdk.api.annotation.JavaVersionSupport;

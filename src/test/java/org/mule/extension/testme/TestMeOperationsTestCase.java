@@ -1,4 +1,4 @@
-package org.mule.extension.testme;
+  package org.mule.extension.testme;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -32,6 +32,6 @@ public class TestMeOperationsTestCase extends MuleArtifactFunctionalTestCase {
                                       .getPayload()
                                       .getValue());
     //assertThat(payloadValue, is("Using Configuration [configId] with Connection id [aValue:100]"));
-    assertThat(payloadValue, is("Using Configuration [configId] with Connection id [connection.getId()]"));
+    assertThat(payloadValue, is("Using Image Resolution of [150] DPI."));
   }
 }

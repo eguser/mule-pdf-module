@@ -4,7 +4,7 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
           http://www.mulesoft.org/schema/mule/testme http://www.mulesoft.org/schema/mule/testme/current/mule-testme.xsd">
 
-    <testme:config name="config" configId="configId">
+    <testme:config name="config" imageResolution="DPI_150" maxNumberOfPages="50" maxDocumentSize="10000">
         <!-- <testme:connection requiredParameter="aValue" /> -->
     </testme:config>
 
