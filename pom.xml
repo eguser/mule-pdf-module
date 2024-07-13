@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.mule.extensions</groupId>
     <artifactId>mule-modules-parent</artifactId>
-    <version>1.6.3</version>
+    <version>1.7.1</version>
   </parent>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>org.mule.sdk</groupId>
       <artifactId>mule-sdk-api</artifactId>
-      <version>0.8.3</version>
+      <version>0.9.1</version>
     </dependency>
   </dependencies>
   <dependencyManagement>
