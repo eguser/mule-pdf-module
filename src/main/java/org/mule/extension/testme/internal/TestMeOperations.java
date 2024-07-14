@@ -2,11 +2,16 @@ package org.mule.extension.testme.internal;
 
 import static org.mule.runtime.extension.api.annotation.param.MediaType.ANY;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mule.extension.testme.internal.config.TestMeConfiguration;
 import org.mule.runtime.extension.api.annotation.param.MediaType;
 import org.mule.runtime.extension.api.annotation.param.Config;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 
+import org.mule.runtime.extension.api.runtime.operation.Result;
 
 /**
  * This class is a container for operations, every public method in this class will be taken as an extension operation.
@@ -29,6 +34,14 @@ public class TestMeOperations {
   @MediaType(value = ANY, strict = false)
   public String sayHi(String person) {
     return buildHelloMessage(person);
+  }
+  
+  @MediaType("application/pdf")
+  public List<Result<InputStream, Void>> splitPDF(TestMeConfiguration config ) {
+    final List<Result<InputStream, Void>> listResult = new ArrayList<>();;
+   
+    
+    return listResult;
   }
 
   /**
