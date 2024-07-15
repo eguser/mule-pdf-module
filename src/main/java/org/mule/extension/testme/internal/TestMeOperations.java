@@ -37,7 +37,7 @@ public class TestMeOperations {
   }
   
   @MediaType("application/pdf")
-  public List<Result<InputStream, Void>> splitPDF(TestMeConfiguration config ) {
+  public List<Result<InputStream, Void>> splitPDF(@Config TestMeConfiguration config ) {
     final List<Result<InputStream, Void>> listResult = new ArrayList<>();;
    
     
