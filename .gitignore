@@ -39,10 +39,11 @@ local.properties
 .buildpath
 
 # --------------- #
-# Studio-specific #
+# IDE-specific #
 # --------------- #
 target/
 .mule/**
 .mule/**/*
 .DS_Store
 velocity.log
+.vscode/**
