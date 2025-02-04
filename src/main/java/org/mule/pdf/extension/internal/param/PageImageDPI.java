@@ -1,4 +1,4 @@
-package org.mule.extension.testme.internal.param;
+package org.mule.pdf.extension.internal.param;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package org.mule.extension.testme.internal;
+package org.mule.pdf.extension.internal;
 
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
@@ -24,9 +24,9 @@ import org.slf4j.LoggerFactory;
  * will be pooled and reused. There are other implementations like {@link CachedConnectionProvider} which lazily creates and
  * caches connections or simply {@link ConnectionProvider} if you want a new connection each time something requires one.
  */
-public class TestMeConnectionProvider implements PoolingConnectionProvider<TestMeConnection> {
+public class PDFModuleConnectionProvider implements PoolingConnectionProvider<PDFModuleConnection> {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(TestMeConnectionProvider.class);
+  private final Logger LOGGER = LoggerFactory.getLogger(PDFModuleConnectionProvider.class);
 
  /**
   * A parameter that is always required to be configured.
@@ -43,12 +43,12 @@ public class TestMeConnectionProvider implements PoolingConnectionProvider<TestM
   private int optionalParameter;
 
   @Override
-  public TestMeConnection connect() throws ConnectionException {
-    return new TestMeConnection(requiredParameter + ":" + optionalParameter);
+  public PDFModuleConnection connect() throws ConnectionException {
+    return new PDFModuleConnection(requiredParameter + ":" + optionalParameter);
   }
 
   @Override
-  public void disconnect(TestMeConnection connection) {
+  public void disconnect(PDFModuleConnection connection) {
     try {
       connection.invalidate();
     } catch (Exception e) {
@@ -57,7 +57,7 @@ public class TestMeConnectionProvider implements PoolingConnectionProvider<TestM
   }
 
   @Override
-  public ConnectionValidationResult validate(TestMeConnection connection) {
+  public ConnectionValidationResult validate(PDFModuleConnection connection) {
     return ConnectionValidationResult.success();
   }
 }

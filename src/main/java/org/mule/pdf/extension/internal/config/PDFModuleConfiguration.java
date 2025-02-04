@@ -1,8 +1,8 @@
-package org.mule.extension.testme.internal.config;
+package org.mule.pdf.extension.internal.config;
 
-import org.mule.extension.testme.internal.TestMeOperations;
-import org.mule.extension.testme.internal.param.ImageScanningParams;
-import org.mule.extension.testme.internal.param.PDFSplittingParams;
+import org.mule.pdf.extension.internal.TestMeOperations;
+import org.mule.pdf.extension.internal.param.ImageScanningParams;
+import org.mule.pdf.extension.internal.param.PDFSplittingParams;
 import org.mule.runtime.extension.api.annotation.Operations;
 import org.mule.runtime.extension.api.annotation.connectivity.ConnectionProviders;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
@@ -13,7 +13,7 @@ import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
  * operations since they represent something core from the extension.
  */
 @Operations(TestMeOperations.class)
-public class TestMeConfiguration {
+public class PDFModuleConfiguration {
   
   @ParameterGroup(name = "Image Scanning")
   private ImageScanningParams imageScanningParams;

@@ -1,4 +1,4 @@
-package org.mule.extension.testme.internal.param;
+package org.mule.pdf.extension.internal.param;
 
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.Parameter;

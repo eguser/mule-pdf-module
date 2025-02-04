@@ -1,14 +1,14 @@
-package org.mule.extension.testme.internal;
+package org.mule.pdf.extension.internal;
 
 
 /**
  * This class represents an extension connection just as example (there is no real connection with anything here c:).
  */
-public final class TestMeConnection {
+public final class PDFModuleConnection {
 
   private final String id;
 
-  public TestMeConnection(String id) {
+  public PDFModuleConnection(String id) {
     this.id = id;
   }
 

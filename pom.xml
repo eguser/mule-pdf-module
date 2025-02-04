@@ -3,23 +3,23 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.mule.extension</groupId>
-  <artifactId>test-me</artifactId>
-  <version>0.0.6</version>
+  <artifactId>mule-pdf-module</artifactId>
+  <version>0.1.0</version>
   <packaging>mule-extension</packaging>
-  <name>TestMe Extension</name>
+  <name>mule-pdf-module</name>
 
   <parent>
     <groupId>org.mule.extensions</groupId>
     <artifactId>mule-modules-parent</artifactId>
-    <version>1.7.1</version>
+    <version>1.7.3</version>
   </parent>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <pdfbox.version>3.0.2</pdfbox.version>
-    <mule.runtime.version>4.7.1</mule.runtime.version>
-    <mule.maven.plugin.version>4.2.0</mule.maven.plugin.version>
-    <muleJavaEeBomVersion>4.7.1</muleJavaEeBomVersion>
+    <pdfbox.version>3.0.4</pdfbox.version>
+    <mule.runtime.version>4.8.0</mule.runtime.version>
+    <mule.maven.plugin.version>4.3.1</mule.maven.plugin.version>
+    <muleJavaEeBomVersion>4.8.0</muleJavaEeBomVersion>
   </properties>
   <build>
     <plugins>
@@ -44,7 +44,7 @@
               <format>html</format>
             </formats>
           </coverage>
-          <runtimeVersion>${mule.runtime.version}</runtimeVersion>
+          <runtimeVersion>${mule.version}</runtimeVersion>
           <dynamicPorts>
             <dynamicPort>http.port</dynamicPort>
           </dynamicPorts>
@@ -54,6 +54,14 @@
   </build>
 
   <dependencies>
+    
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
+      <version>${pdfbox.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <!--
     <dependency>
       <groupId>org.mule</groupId>
       <artifactId>mule-javaee-runtime-bom</artifactId>
@@ -64,20 +72,11 @@
     <dependency>
       <groupId>org.mule.sdk</groupId>
       <artifactId>mule-sdk-api</artifactId>
-      <version>0.9.1</version>
+      <version>0.9.2</version>
     </dependency>
+-->
+
   </dependencies>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.mule</groupId>
-        <artifactId>mule-javaee-runtime-bom</artifactId>
-        <version>4.7.1</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <repositories>
     <repository>
