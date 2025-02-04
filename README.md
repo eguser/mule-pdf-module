@@ -1,19 +1,16 @@
-# TestMe Extension
+# Mule PDF Module
 
 Add description ...
 
-
 ...
 
-
 ...
-
 
 Add this dependency to your application pom.xml
 
 ```
-<groupId>org.mule.extension</groupId>
-<artifactId>test-me</artifactId>
-<version>0.0.1</version>
+<groupId><my.anypoint.orgId></groupId>
+<artifactId>mule-pdf-module</artifactId>
+<version>0.1.0</version>
 <classifier>mule-plugin</classifier>
 ```
