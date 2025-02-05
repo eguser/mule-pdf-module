@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mule.extension</groupId>
+  <groupId>org.mule.modules</groupId>
   <artifactId>mule-pdf-module</artifactId>
   <version>0.1.0</version>
   <packaging>mule-extension</packaging>
@@ -11,15 +11,17 @@
   <parent>
     <groupId>org.mule.extensions</groupId>
     <artifactId>mule-modules-parent</artifactId>
-    <version>1.8.0</version>
+    <version>1.8.3</version>
   </parent>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <pdfbox.version>3.0.4</pdfbox.version>
+    <mtf-tools.version>1.2.0</mtf-tools.version>
     <mule.runtime.version>4.8.0</mule.runtime.version>
     <mule.maven.plugin.version>4.3.1</mule.maven.plugin.version>
     <muleJavaEeBomVersion>4.8.0</muleJavaEeBomVersion>
+    <skipTests>true</skipTests>
   </properties>
   <build>
     <plugins>
@@ -44,7 +46,7 @@
               <format>html</format>
             </formats>
           </coverage>
-          <runtimeVersion>${mule.version}</runtimeVersion>
+          <runtimeVersion>${mule.runtime.version}</runtimeVersion>
           <dynamicPorts>
             <dynamicPort>http.port</dynamicPort>
           </dynamicPorts>
@@ -54,12 +56,29 @@
   </build>
 
   <dependencies>
-    
+    <dependency>
+      <groupId>org.mule</groupId>
+      <artifactId>mule-javaee-runtime-bom</artifactId>
+      <version>${muleJavaEeBomVersion}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.sdk</groupId>
+      <artifactId>mule-sdk-api</artifactId>
+      <version>0.10.4</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.pdfbox</groupId>
       <artifactId>pdfbox</artifactId>
       <version>${pdfbox.version}</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.mulesoft.munit</groupId>
+      <artifactId>mtf-tools</artifactId>
+      <version>${mtf-tools.version}</version>
+      <classifier>mule-plugin</classifier>
     </dependency>
     <!--
     <dependency>
