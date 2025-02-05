@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.mule.runtime.extension.api.annotation.param.MediaType;
 import org.mule.runtime.extension.api.annotation.param.Config;
@@ -31,7 +32,7 @@ public class SplitPDFOperation {
 		
 		List<Result<InputStream, PDFAttributes>> resultList = new ArrayList<>();
 		
-		try (PDDocument document = Loader.loadPDF(pdfInputStream.readAllBytes())) {
+		try (PDDocument document = Loader.loadPDF(new RandomAccessReadBuffer(pdfInputStream))) {
             int totalPages = document.getNumberOfPages();
             int splitCounter = 0;
             
