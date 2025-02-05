@@ -23,24 +23,24 @@ public class SplitPDFOperation {
 	
 	@MediaType(value = MediaType.APPLICATION_JSON)
     @OutputJsonType(schema = "metadata/PDFSplitterOperationOutput.json")
-    @DisplayName("Split PDF by Pages")
+    @DisplayName("Split PDF")
     public List<Result<InputStream, PDFAttributes>> splitPdf(
     		@Config PDFModuleConfiguration config,
-            InputStream pdfInputStream, 
-            @Optional(defaultValue = "1") int pagesPerSplit,
+            InputStream pdfPayload, 
+            int maxPages,
             StreamingHelper streamingHelper) throws Exception {
 		
 		List<Result<InputStream, PDFAttributes>> resultList = new ArrayList<>();
 		
-		try (PDDocument document = Loader.loadPDF(new RandomAccessReadBuffer(pdfInputStream))) {
+		try (PDDocument document = Loader.loadPDF(new RandomAccessReadBuffer(pdfPayload))) {
             int totalPages = document.getNumberOfPages();
             int splitCounter = 0;
             
             // Loop through and split the document
-            for (int i = 0; i < totalPages; i += pagesPerSplit) {
+            for (int i = 0; i < totalPages; i += maxPages) {
                 PDDocument splitDoc = new PDDocument();
                 
-                for (int j = 0; j < pagesPerSplit && (i + j) < totalPages; j++) {
+                for (int j = 0; j < maxPages && (i + j) < totalPages; j++) {
                     splitDoc.addPage(document.getPage(i + j));
                 }
 
