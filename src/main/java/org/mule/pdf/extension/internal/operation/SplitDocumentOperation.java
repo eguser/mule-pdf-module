@@ -26,13 +26,13 @@ import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.streaming.StreamingHelper;
 import org.slf4j.Logger;
 
-public class SplitPDFOperation {
-	private static final Logger LOGGER = getLogger(SplitPDFOperation.class);
+public class SplitDocumentOperation {
+	private static final Logger LOGGER = getLogger(SplitDocumentOperation.class);
 	
 	@MediaType(value = MediaType.APPLICATION_JSON)
-    @OutputJsonType(schema = "metadata/PDFSplitterOperationOutput.json")
-    @DisplayName("Split PDF")
-    public List<Result<InputStream, PDFAttributes>> splitPdf(
+    @OutputJsonType(schema = "metadata/SplitDocumentOperationOutput.json")
+    @DisplayName("Split Document")
+    public List<Result<InputStream, PDFAttributes>> splitDocument(
     		@Config PDFModuleConfiguration config,
     		@DisplayName("Original File Name") @Summary("The file name of the PDF Document we will split.")
     			String fileName,

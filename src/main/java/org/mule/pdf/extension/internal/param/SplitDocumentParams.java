@@ -3,7 +3,7 @@ package org.mule.pdf.extension.internal.param;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
 import org.mule.runtime.extension.api.annotation.param.display.*;
 
-public class PDFSplittingParams {
+public class SplitDocumentParams {
   
   @Parameter
   @DisplayName("Max Pages per Document")
