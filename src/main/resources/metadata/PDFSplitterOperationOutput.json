@@ -19,6 +19,10 @@
           "fileSize": {
             "type": "integer",
             "description": "Size of this split PDF in bytes"
+          },
+          "fileName": {
+            "type": "string",
+            "description": "File name of this PDF part"
           }
         }
       }
