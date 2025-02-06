@@ -8,14 +8,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.mule.runtime.extension.api.annotation.param.MediaType;
 import org.mule.runtime.extension.api.annotation.param.Config;
-import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 import org.mule.runtime.extension.api.annotation.param.display.Example;
 import org.mule.runtime.extension.api.annotation.param.display.Summary;
@@ -38,13 +37,17 @@ public class SplitDocumentOperation {
     			String fileName,
     		@DisplayName("Original PDF Payload")
             	InputStream pdfPayload,
-            @DisplayName("Split Label") @Example("Part")
+            @DisplayName("Split Label Suffix") @Example("Part")
             	String splitLabel,
-            String labelSeparator,
-            int maxPages,
+            @DisplayName("File Name and Suffix Separator") @Example("_")
+            	String labelSeparator,
+            @DisplayName("Max Number of Pages in Each Part")
+            	int maxPages,
             StreamingHelper streamingHelper) throws Exception {
 
 		List<Result<InputStream, PDFAttributes>> pdfPartsList = new ArrayList<>();
+		
+		String partFileName = FilenameUtils.removeExtension(fileName) + labelSeparator + splitLabel;
 
 		Splitter splitter = new Splitter();
 		splitter.setSplitAtPage(maxPages);
@@ -68,7 +71,7 @@ public class SplitDocumentOperation {
                         PDFAttributes attributes = new PDFAttributes();
                         attributes.setPageCount(pdfDocumentPart.getNumberOfPages());
                         attributes.setFileSize(outputStream.size());
-                        attributes.setFileName(fileName + labelSeparator + splitLabel + splitCounter);
+                        attributes.setFileName(partFileName + String.format("%03d",splitCounter) + ".pdf");
                         
             			pdfPartsList.add(Result.<InputStream, PDFAttributes>builder()
             					.output(inputStream)
