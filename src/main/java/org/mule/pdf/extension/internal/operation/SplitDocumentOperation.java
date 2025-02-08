@@ -42,15 +42,15 @@ public class SplitDocumentOperation {
             @DisplayName("Max Number of Pages in Each Part")
             	int maxPages,
             StreamingHelper streamingHelper) throws Exception {
-
-		List<Result<InputStream, PDFAttributes>> pdfPartsList = new ArrayList<>();
+    	
+        List<Result<InputStream, PDFAttributes>> pdfPartsList = new ArrayList<>();
 		
-		String partFileName = FilenameUtils.removeExtension(fileName) + labelSeparator + splitLabel;
+        String partFileName = FilenameUtils.removeExtension(fileName) + labelSeparator + splitLabel;
 
-		Splitter splitter = new Splitter();
-		splitter.setSplitAtPage(maxPages);
+        Splitter splitter = new Splitter();
+        splitter.setSplitAtPage(maxPages);
 		
-		try (PDDocument originalPdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(pdfPayload))){
+        try (PDDocument originalPdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(pdfPayload))){
 
             int totalPages = originalPdfDocument.getNumberOfPages();
             int pdfPartsCounter = 0;
@@ -76,6 +76,7 @@ public class SplitDocumentOperation {
                         
                         pdfPartsList.add(Result.<InputStream, PDFAttributes>builder()
                                                .output(inputStream)
+                                               .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
                                                .attributes(attributes)
                                                .build());
 
@@ -96,6 +97,7 @@ public class SplitDocumentOperation {
                 attributes.setFileName(fileName);
                 pdfPartsList.add(Result.<InputStream, PDFAttributes>builder()
                                        .output(pdfPayload)
+                                       .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
                                        .attributes(attributes)
                                        .build());
             }
