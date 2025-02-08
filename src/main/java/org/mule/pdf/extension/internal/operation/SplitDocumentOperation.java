@@ -28,8 +28,7 @@ import org.slf4j.Logger;
 public class SplitDocumentOperation {
 	private static final Logger LOGGER = getLogger(SplitDocumentOperation.class);
 	
-	@MediaType(value = MediaType.APPLICATION_JSON)
-    @OutputJsonType(schema = "metadata/SplitDocumentOperationOutput.json")
+    @MediaType(value = MediaType.ANY, strict = false)
     @DisplayName("Split Document")
     public List<Result<InputStream, PDFAttributes>> splitDocument(
     		@Config PDFModuleConfiguration config,
@@ -55,46 +54,52 @@ public class SplitDocumentOperation {
 		try (PDDocument originalPdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(pdfPayload))){
 
             int totalPages = originalPdfDocument.getNumberOfPages();
-            int splitCounter = 0;
+            int pdfPartsCounter = 0;
             
             if (totalPages > maxPages) {
             	List<PDDocument> originalPdfDocumentParts = splitter.split(originalPdfDocument);
             	
             	for (PDDocument pdfDocumentPart : originalPdfDocumentParts) {
-            		try (
-            				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();            			
-                			InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-            		) {
-            			pdfDocumentPart.save(outputStream);
+                    try
+                    (
+                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    )
+                    {
+                        pdfDocumentPart.save(outputStream);
             			
-            			// Collect metadata
+                        InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+
+                        // Collect metadata
                         PDFAttributes attributes = new PDFAttributes();
                         attributes.setPageCount(pdfDocumentPart.getNumberOfPages());
                         attributes.setFileSize(outputStream.size());
-                        attributes.setFileName(partFileName + String.format("%03d",splitCounter) + ".pdf");
+                        attributes.setFileName(partFileName + String.format("%03d",pdfPartsCounter) + ".pdf");
                         
-            			pdfPartsList.add(Result.<InputStream, PDFAttributes>builder()
-            					.output(inputStream)
-            					.attributes(null)
-            					.build());
-            			
-            			pdfDocumentPart.close();
-            		} catch (Exception e) {
-						LOGGER.error("Exception " + e.getMessage() + " occurred. Closing the pdfDocumentPart.");
-						pdfDocumentPart.close();
-            		}
+                        pdfPartsList.add(Result.<InputStream, PDFAttributes>builder()
+                                               .output(inputStream)
+                                               .attributes(attributes)
+                                               .build());
+
+                        pdfPartsCounter++;
+
+                        pdfDocumentPart.close();
+                        inputStream.close();
+                    } catch (Exception e) {
+                        LOGGER.error("Exception " + e.getMessage() + " occurred. Closing the pdfDocumentPart.");
+                        pdfDocumentPart.close();
+                    }
             	}
             } else {
             	LOGGER.info("originalPdfDocument has fewer pages than " + maxPages);
             	pdfPartsList.add(Result.<InputStream, PDFAttributes>builder()
-    					.output(pdfPayload)
-    					.attributes(null)
-    					.build());
+                                       .output(pdfPayload)
+                                       .attributes(null)
+                                       .build());
             }
         }
-		
-		return pdfPartsList;
-		
-	}
+
+        return pdfPartsList;
+
+    }
 
 }
