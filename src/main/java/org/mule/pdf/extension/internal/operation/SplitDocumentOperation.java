@@ -20,7 +20,6 @@ import org.mule.runtime.extension.api.annotation.param.display.Example;
 import org.mule.runtime.extension.api.annotation.param.display.Summary;
 import org.mule.pdf.extension.api.PDFAttributes;
 import org.mule.pdf.extension.internal.config.PDFModuleConfiguration;
-import org.mule.runtime.extension.api.annotation.metadata.fixed.OutputJsonType;
 import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.streaming.StreamingHelper;
 import org.slf4j.Logger;
@@ -58,7 +57,7 @@ public class SplitDocumentOperation {
             
             if (totalPages > maxPages) {
             	List<PDDocument> originalPdfDocumentParts = splitter.split(originalPdfDocument);
-            	
+
             	for (PDDocument pdfDocumentPart : originalPdfDocumentParts) {
                     try
                     (
@@ -88,12 +87,16 @@ public class SplitDocumentOperation {
                         LOGGER.error("Exception " + e.getMessage() + " occurred. Closing the pdfDocumentPart.");
                         pdfDocumentPart.close();
                     }
-            	}
+                }
             } else {
-            	LOGGER.info("originalPdfDocument has fewer pages than " + maxPages);
-            	pdfPartsList.add(Result.<InputStream, PDFAttributes>builder()
+                LOGGER.info("originalPdfDocument has fewer pages than " + maxPages);
+
+                PDFAttributes attributes = new PDFAttributes();
+                attributes.setPageCount(totalPages);
+                attributes.setFileName(fileName);
+                pdfPartsList.add(Result.<InputStream, PDFAttributes>builder()
                                        .output(pdfPayload)
-                                       .attributes(null)
+                                       .attributes(attributes)
                                        .build());
             }
         }
