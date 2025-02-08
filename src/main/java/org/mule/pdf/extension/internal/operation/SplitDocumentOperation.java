@@ -4,6 +4,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,11 +60,7 @@ public class SplitDocumentOperation {
             	List<PDDocument> originalPdfDocumentParts = splitter.split(originalPdfDocument);
 
             	for (PDDocument pdfDocumentPart : originalPdfDocumentParts) {
-                    try
-                    (
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    )
-                    {
+                    try ( ByteArrayOutputStream outputStream = new ByteArrayOutputStream() ) {
                         pdfDocumentPart.save(outputStream);
             			
                         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
@@ -81,16 +78,18 @@ public class SplitDocumentOperation {
                                                .build());
 
                         pdfPartsCounter++;
-
-                        pdfDocumentPart.close();
-                        inputStream.close();
                     } catch (Exception e) {
                         LOGGER.error("Exception " + e.getMessage() + " occurred. Closing the pdfDocumentPart.");
-                        pdfDocumentPart.close();
+                    } finally {
+                        try {
+                            pdfDocumentPart.close();
+                        } catch (IOException ioException) {
+                            LOGGER.warn("Failed to close pdfDocumentPart: " + ioException.getMessage(), ioException);
+                        }
                     }
                 }
             } else {
-                LOGGER.info("originalPdfDocument has fewer pages than " + maxPages);
+                LOGGER.info( fileName + " has fewer pages than the " + maxPages + " configured in the Split Document operation.");
 
                 PDFAttributes attributes = new PDFAttributes();
                 attributes.setPageCount(totalPages);
