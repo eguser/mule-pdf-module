@@ -1,5 +1,6 @@
 package org.mule.pdf.extension.internal.config;
 
+import org.mule.pdf.extension.internal.operation.ExtractPagesOperation;
 import org.mule.pdf.extension.internal.operation.SplitDocumentOperation;
 import org.mule.pdf.extension.internal.param.ImageScanningParams;
 import org.mule.pdf.extension.internal.param.SplitDocumentParams;
@@ -12,7 +13,7 @@ import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
  * This class represents an extension configuration, values set in this class are commonly used across multiple
  * operations since they represent something core from the extension.
  */
-@Operations(SplitDocumentOperation.class)
+@Operations({SplitDocumentOperation.class, ExtractPagesOperation.class})
 public class PDFModuleConfiguration {
   
   @ParameterGroup(name = "Image Scanning")
