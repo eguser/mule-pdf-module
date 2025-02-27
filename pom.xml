@@ -16,13 +16,38 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <commons.io.version>2.18.0</commons.io.version>
     <pdfbox.version>3.0.4</pdfbox.version>
     <mtf-tools.version>1.2.0</mtf-tools.version>
-    <mule.runtime.version>4.8.0</mule.runtime.version>
     <mule.maven.plugin.version>4.3.1</mule.maven.plugin.version>
-    <muleJavaEeBomVersion>4.8.0</muleJavaEeBomVersion>
+    <mule.sdk.api.version>0.10.4</mule.sdk.api.version>
     <skipTests>true</skipTests>
   </properties>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons.io.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.sdk</groupId>
+      <artifactId>mule-sdk-api</artifactId>
+      <version>${mule.sdk.api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
+      <version>${pdfbox.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox-io</artifactId>
+      <version>${pdfbox.version}</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -54,59 +79,6 @@
       </plugin>
     </plugins>
   </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.mule</groupId>
-      <artifactId>mule-javaee-runtime-bom</artifactId>
-      <version>${muleJavaEeBomVersion}</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.18.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mule.sdk</groupId>
-      <artifactId>mule-sdk-api</artifactId>
-      <version>0.10.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.pdfbox</groupId>
-      <artifactId>pdfbox</artifactId>
-      <version>${pdfbox.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.pdfbox</groupId>
-      <artifactId>pdfbox-io</artifactId>
-      <version>${pdfbox.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.mulesoft.munit</groupId>
-      <artifactId>mtf-tools</artifactId>
-      <version>${mtf-tools.version}</version>
-      <classifier>mule-plugin</classifier>
-    </dependency>
-    <!--
-    <dependency>
-      <groupId>org.mule</groupId>
-      <artifactId>mule-javaee-runtime-bom</artifactId>
-      <version>${muleJavaEeBomVersion}</version>
-      <type>pom</type>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mule.sdk</groupId>
-      <artifactId>mule-sdk-api</artifactId>
-      <version>0.9.2</version>
-    </dependency>
--->
-
-  </dependencies>
 
   <repositories>
     <repository>
