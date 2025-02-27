@@ -47,3 +47,7 @@ target/
 .DS_Store
 velocity.log
 .vscode/**
+.java-version
+.idea
+.idea/**
+
