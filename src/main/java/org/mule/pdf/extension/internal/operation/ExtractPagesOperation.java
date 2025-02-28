@@ -14,13 +14,11 @@ import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.mule.runtime.extension.api.annotation.param.MediaType;
 import org.mule.runtime.extension.api.annotation.metadata.TypeResolver;
-import org.mule.runtime.extension.api.annotation.param.Config;
 import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 import org.mule.runtime.extension.api.annotation.param.display.Example;
 import org.mule.runtime.extension.api.annotation.param.display.Summary;
 import org.mule.pdf.extension.api.PDFAttributes;
-import org.mule.pdf.extension.internal.config.PDFModuleConfiguration;
 import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
 import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.streaming.StreamingHelper;
@@ -32,7 +30,7 @@ public class ExtractPagesOperation {
 	@MediaType(value = MediaType.ANY, strict = false)
     @DisplayName("Extract Pages")
     public Result<InputStream, PDFAttributes> extractPages(
-    		@Config PDFModuleConfiguration config,
+    		//@Config PDFModuleConfiguration config,
             @DisplayName("Original PDF Payload")
                 @Content @TypeResolver(BinaryMetadataResolver.class) InputStream pdfPayload,
             @DisplayName("Original File Name") @Summary("The file name of the PDF Document we will extract pages from.")
