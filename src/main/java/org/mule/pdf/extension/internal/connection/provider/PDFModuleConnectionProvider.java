@@ -1,5 +1,6 @@
-package org.mule.pdf.extension.internal;
+package org.mule.pdf.extension.internal.connection.provider;
 
+import org.mule.pdf.extension.internal.connection.PDFModuleConnection;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
 import org.mule.runtime.extension.api.annotation.param.Optional;

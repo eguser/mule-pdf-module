@@ -1,4 +1,4 @@
-package org.mule.pdf.extension.internal;
+package org.mule.pdf.extension.internal.connection;
 
 
 /**
