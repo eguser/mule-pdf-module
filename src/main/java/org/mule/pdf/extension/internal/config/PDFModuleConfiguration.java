@@ -5,7 +5,6 @@ import org.mule.pdf.extension.internal.operation.SplitDocumentOperation;
 import org.mule.pdf.extension.internal.param.ImageScanningParams;
 import org.mule.pdf.extension.internal.param.SplitDocumentParams;
 import org.mule.runtime.extension.api.annotation.Operations;
-import org.mule.runtime.extension.api.annotation.connectivity.ConnectionProviders;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 
