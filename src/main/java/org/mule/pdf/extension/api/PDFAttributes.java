@@ -20,9 +20,9 @@ public class PDFAttributes {
     public void setFileSize(int fileSize) {
         this.fileSize = fileSize;
     }
-    
+
     public String getFileName() {
-    	return fileName;
+        return fileName;
     }
 
     public void setFileName(String newFileName) {
