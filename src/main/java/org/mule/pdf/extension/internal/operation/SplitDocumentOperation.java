@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.mule.pdf.extension.api.PDFAttributes;
@@ -19,6 +20,7 @@ import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
 import org.mule.runtime.extension.api.annotation.metadata.TypeResolver;
 import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.extension.api.annotation.param.MediaType;
+import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 import org.mule.runtime.extension.api.annotation.param.display.Example;
 import org.mule.runtime.extension.api.annotation.param.display.Summary;
@@ -45,6 +47,11 @@ public class SplitDocumentOperation {
             @DisplayName("File Name and Suffix Separator")
                 @Example("_")
                 String labelSeparator,
+            @DisplayName("Start Parts with First Pages")
+                @Summary("The original document start pages to include in each part after the split.")
+                @Optional
+                @Example("4")
+                int firstPages,
             @DisplayName("Max Number of Pages in Each Part")
                 int maxPages,
             StreamingHelper streamingHelper) throws Exception {
@@ -53,20 +60,48 @@ public class SplitDocumentOperation {
 
         String partFileName = FilenameUtils.removeExtension(fileName) + labelSeparator + splitLabel;
 
-        Splitter splitter = new Splitter();
-        splitter.setSplitAtPage(maxPages);
+        PDDocument startWithDocument = new PDDocument();
 
-        try (PDDocument originalPdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(pdfPayload))){
+        Splitter splitter = new Splitter();
+        PDFMergerUtility merger = new PDFMergerUtility();
+        merger.setDocumentMergeMode(PDFMergerUtility.DocumentMergeMode.OPTIMIZE_RESOURCES_MODE);
+
+        LOGGER.info("Will prepend the first " + firstPages + " pages to each PDF part.");
+
+        try (PDDocument originalPdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(pdfPayload))) {
 
             int totalPages = originalPdfDocument.getNumberOfPages();
+
+            if (firstPages > 0) {
+                splitter.setStartPage(firstPages + 1);
+                splitter.setSplitAtPage(maxPages - firstPages);
+
+                for (int i = 0; i < firstPages; i++) {
+                    startWithDocument.addPage(originalPdfDocument.getPage(i));
+                }
+
+            } else {
+                splitter.setSplitAtPage(maxPages);
+            }
+
             int pdfPartsCounter = 0;
             
             if (totalPages > maxPages) {
                 List<PDDocument> originalPdfDocumentParts = splitter.split(originalPdfDocument);
 
                 for (PDDocument pdfDocumentPart : originalPdfDocumentParts) {
-                    try ( ByteArrayOutputStream outputStream = new ByteArrayOutputStream() ) {
-                        pdfDocumentPart.save(outputStream);
+                    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+                        if (startWithDocument.getNumberOfPages() > 0) {
+                            PDDocument mergeDocs = new PDDocument();
+                            merger.appendDocument(mergeDocs, startWithDocument);
+                            merger.appendDocument(mergeDocs, pdfDocumentPart);
+                            mergeDocs.save(outputStream);
+                            // merger.setDestinationStream(outputStream);
+                            // merger.mergeDocuments(null);
+                        } else {
+                            pdfDocumentPart.save(outputStream);
+                        }
 
                         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
@@ -83,6 +118,7 @@ public class SplitDocumentOperation {
                                                .build());
 
                         pdfPartsCounter++;
+                        inputStream.close();
                     } catch (Exception e) {
                         LOGGER.error("Exception " + e.getMessage() + " occurred. Closing the pdfDocumentPart.");
                     } finally {
