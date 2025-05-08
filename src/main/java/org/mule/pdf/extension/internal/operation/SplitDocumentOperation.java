@@ -72,7 +72,7 @@ public class SplitDocumentOperation {
 
             int totalPages = originalPdfDocument.getNumberOfPages();
 
-            if (firstPages > 0) {
+            if (totalPages > maxPages && firstPages > 0 && maxPages > firstPages) {
                 splitter.setStartPage(firstPages + 1);
                 splitter.setSplitAtPage(maxPages - firstPages);
 
@@ -80,7 +80,7 @@ public class SplitDocumentOperation {
                     startWithDocument.addPage(originalPdfDocument.getPage(i));
                 }
 
-            } else {
+            } else if (totalPages > maxPages) {
                 splitter.setSplitAtPage(maxPages);
             }
 
