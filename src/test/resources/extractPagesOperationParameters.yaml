@@ -1,0 +1,27 @@
+pageCount_LT_FirstPages_LT_MaxPages:
+  fileName: "1page.pdf"
+  maxPages: "5"
+  firstPages: "2"
+  output:
+    collectionSize: 1
+    fileName: "1page.pdf"
+    pageCount: 1
+
+
+pageCount_LT_FirstPages_GT_MaxPages:
+  fileName: "16page.pdf"
+  maxPages: "5"
+  firstPages: "20"
+  output:
+    collectionSize: 1
+    fileName: "16page.pdf"
+    pageCount: 16
+
+firstPages_GT_PageCount_GT_MaxPages:
+  fileName: "16page.pdf"
+  maxPages: "5"
+  firstPages: "20"
+  output:
+    collectionSize: 1
+    fileName: "16page.pdf"
+    pageCount: 16

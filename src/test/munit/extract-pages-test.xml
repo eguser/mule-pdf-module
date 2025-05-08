@@ -1,0 +1,33 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:pdf="http://www.mulesoft.org/schema/mule/pdf"
+      xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+      xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+      http://www.mulesoft.org/schema/mule/munit-tools http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+      http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+      http://www.mulesoft.org/schema/mule/pdf http://www.mulesoft.org/schema/mule/pdf/current/mule-pdf.xsd">
+
+    <!-- 
+    <pdf:config name="config" imageResolution="DPI_150" maxNumberOfPages="50" maxDocumentSize="10000">
+      <pdf:connection requiredParameter="aValue" />
+    </pdf:config>
+    -->
+
+    <munit:config name="extract-pages"/>
+
+    <munit:test name="extractPages">
+        <munit:execution>
+            <set-variable variableName="pageCount" value="1"/>
+            <set-variable variableName="fileName" value="#[vars.pageCount as String ++ 'page.pdf']" />
+            <set-variable variableName="maxPages" value="5"/>
+            <set-payload
+                value="#[MunitTools::getResourceAsReusableStream(vars.fileName)]" />
+            <pdf:extract-pages extractPages="1" fileName="#[vars.fileName]"/>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-equals actual="#[attributes.fileName]" expected="#[vars.pageCount ++ 'page_extracted_.pdf']"/>
+        </munit:validation>
+    </munit:test>
+
+</mule>

@@ -1,0 +1,43 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:pdf="http://www.mulesoft.org/schema/mule/pdf"
+      xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+      xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+      http://www.mulesoft.org/schema/mule/munit-tools http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+      http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+      http://www.mulesoft.org/schema/mule/pdf http://www.mulesoft.org/schema/mule/pdf/current/mule-pdf.xsd">
+
+    <!-- 
+    <pdf:config name="config" imageResolution="DPI_150" maxNumberOfPages="50" maxDocumentSize="10000">
+      <pdf:connection requiredParameter="aValue" />
+    </pdf:config>
+    -->
+
+    <munit:config name="split-document">
+        <munit:parameterizations file= "splitDocumentOperationParameters.yaml"/>
+    </munit:config>
+
+    <munit:test name="splitDocument" >
+        <munit:execution>
+            <set-variable variableName="fileName" value="${fileName}" />
+            <set-payload 
+                value="#[MunitTools::getResourceAsReusableStream(vars.fileName)]"/>
+            <pdf:split-document 
+                fileName="${fileName}"
+                splitLabel="Part" 
+                labelSeparator="_" 
+                maxPages="${maxPages}"
+                firstPages="${firstPages}"
+            />
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that 
+                expression="#[payload]"
+                is="#[MunitTools::hasSize(MunitTools::equalTo(${output.collectionSize}))]"
+                message="The payload should be an Array with ${output.collectionSize} elements."
+            />
+        </munit:validation>
+    </munit:test>
+
+</mule>
