@@ -6,12 +6,12 @@
   <parent>
     <groupId>org.mule.extensions</groupId>
     <artifactId>mule-modules-parent</artifactId>
-    <version>1.8.3</version>
+    <version>1.9.0</version>
   </parent>
 
   <groupId>org.mule.modules</groupId>
   <artifactId>mule-pdf-module</artifactId>
-  <version>0.1.1</version>
+  <version>0.2.0</version>
   <packaging>mule-extension</packaging>
   <name>mule-pdf-module</name>
 
@@ -23,8 +23,7 @@
     <commons.io.version>2.18.0</commons.io.version>
     <pdfbox.version>3.0.4</pdfbox.version>
     <mtf-tools.version>1.2.0</mtf-tools.version>
-    <mule.maven.plugin.version>4.3.1</mule.maven.plugin.version>
-    <mule.sdk.api.version>0.10.4</mule.sdk.api.version>
+    <mule.maven.plugin.version>4.5.0</mule.maven.plugin.version>
     <skipTests>true</skipTests>
   </properties>
 
@@ -34,11 +33,6 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>${commons.io.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mule.sdk</groupId>
-      <artifactId>mule-sdk-api</artifactId>
-      <version>${mule.sdk.api.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.pdfbox</groupId>

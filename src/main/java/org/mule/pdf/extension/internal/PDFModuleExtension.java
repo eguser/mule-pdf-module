@@ -16,7 +16,7 @@ import org.mule.sdk.api.meta.JavaVersion;
 @Xml(prefix = "pdf")
 @Extension(name = "PDF")
 // @Configurations(PDFModuleConfiguration.class)
-@JavaVersionSupport({ JavaVersion.JAVA_8, JavaVersion.JAVA_11, JavaVersion.JAVA_17 })
+@JavaVersionSupport({ JavaVersion.JAVA_17 })
 @Operations({ SplitDocumentOperation.class, ExtractPagesOperation.class })
 public class PDFModuleExtension {
 
