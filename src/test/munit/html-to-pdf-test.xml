@@ -1,0 +1,31 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:pdf="http://www.mulesoft.org/schema/mule/pdf"
+      xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+      xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+      http://www.mulesoft.org/schema/mule/munit-tools http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+      http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+      http://www.mulesoft.org/schema/mule/pdf http://www.mulesoft.org/schema/mule/pdf/current/mule-pdf.xsd">
+
+    <!--
+    <pdf:config name="config" imageResolution="DPI_150" maxNumberOfPages="50" maxDocumentSize="10000">
+      <pdf:connection requiredParameter="aValue" />
+    </pdf:config>
+    -->
+
+    <munit:config name="html-to-pdf"/>
+
+    <munit:test name="htmlToPdf">
+        <munit:execution>
+            <set-variable variableName="fileName" value="html/invoice.html" />
+            <set-payload
+                value="#[MunitTools::getResourceAsReusableStream(vars.fileName)]" />
+            <pdf:html-to-pdf outputPdfFileName="from_html.pdf"/>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-equals actual="#[attributes.fileName]" expected="from_html.pdf"/>
+        </munit:validation>
+    </munit:test>
+
+</mule>
