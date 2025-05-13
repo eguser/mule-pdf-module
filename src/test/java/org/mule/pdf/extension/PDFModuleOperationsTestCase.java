@@ -2,8 +2,9 @@ package org.mule.pdf.extension;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
+
 import org.junit.Test;
+import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 
 public class PDFModuleOperationsTestCase extends MuleArtifactFunctionalTestCase {
 
@@ -12,12 +13,12 @@ public class PDFModuleOperationsTestCase extends MuleArtifactFunctionalTestCase 
    */
   @Override
   protected String getConfigFile() {
-    return "test-mule-config.xml";
+    return "pdf-operations-config.xml";
   }
 
   @Test
-  public void executeSayHiOperation() throws Exception {
-    String payloadValue = ((String) flowRunner("sayHiFlow").run()
+  public void executeSplitDocumentOperation() throws Exception {
+    String payloadValue = ((String) flowRunner("splitDocument").run()
                                       .getMessage()
                                       .getPayload()
                                       .getValue());
@@ -25,8 +26,8 @@ public class PDFModuleOperationsTestCase extends MuleArtifactFunctionalTestCase 
   }
 
   @Test
-  public void executeRetrieveInfoOperation() throws Exception {
-    String payloadValue = ((String) flowRunner("retrieveInfoFlow")
+  public void executeExtractPagesOperation() throws Exception {
+    String payloadValue = ((String) flowRunner("extractPages")
                                       .run()
                                       .getMessage()
                                       .getPayload()

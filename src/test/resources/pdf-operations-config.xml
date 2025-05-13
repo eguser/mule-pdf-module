@@ -1,0 +1,19 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:pdf="http://www.mulesoft.org/schema/mule/pdf"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+          http://www.mulesoft.org/schema/mule/pdf http://www.mulesoft.org/schema/mule/pdf/current/mule-pdf.xsd">
+
+    <pdf:config name="config" imageResolution="DPI_150" maxNumberOfPages="50" maxDocumentSize="10000">
+        <!-- <pdf:connection requiredParameter="aValue" /> -->
+    </pdf:config>
+
+    <flow name="splitDocument">
+        <pdf:split-document person="Mariano Gonzalez"/>
+    </flow>
+
+    <flow name="extractPages">
+        <pdf:extract-pages config-ref="config"/>
+    </flow>
+
+</mule>
