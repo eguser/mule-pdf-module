@@ -2,10 +2,12 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns:pdf="http://www.mulesoft.org/schema/mule/pdf"
       xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+      xmlns:mtf="http://www.mulesoft.org/schema/mule/mtf"
       xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
       http://www.mulesoft.org/schema/mule/munit-tools http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
       http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+      http://www.mulesoft.org/schema/mule/mtf http://www.mulesoft.org/schema/mule/mtf/current/mule-mtf.xsd
       http://www.mulesoft.org/schema/mule/pdf http://www.mulesoft.org/schema/mule/pdf/current/mule-pdf.xsd">
 
     <!--
@@ -28,4 +30,21 @@
         </munit:validation>
     </munit:test>
 
+    <mtf:tooling-test name="inputPayloadMetadataTest">
+        <mtf:get-input-metadata parameter="htmlPayload">
+            <pdf:html-to-pdf />
+        </mtf:get-input-metadata>
+        <mtf:validation>
+            <munit-tools:assert-equals actual="#[payload.'type']" expected="#['Any']"/>
+        </mtf:validation>
+    </mtf:tooling-test>
+
+    <mtf:tooling-test name="outputPayloadMetadataTest">
+        <mtf:get-output-metadata>
+            <pdf:html-to-pdf />
+        </mtf:get-output-metadata>
+        <mtf:validation>
+            <munit-tools:assert-equals actual="#[payload.'type']" expected="#['Binary']"/>
+        </mtf:validation>
+    </mtf:tooling-test>
 </mule>

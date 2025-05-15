@@ -11,7 +11,7 @@
 
   <groupId>org.mule.modules</groupId>
   <artifactId>mule-pdf-module</artifactId>
-  <version>0.2.1</version>
+  <version>0.2.2</version>
   <packaging>mule-extension</packaging>
   <name>mule-pdf-module</name>
 
