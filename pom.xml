@@ -6,12 +6,12 @@
   <parent>
     <groupId>org.mule.extensions</groupId>
     <artifactId>mule-modules-parent</artifactId>
-    <version>1.9.0</version>
+    <version>1.9.4</version>
   </parent>
 
   <groupId>org.mule.modules</groupId>
   <artifactId>mule-pdf-module</artifactId>
-  <version>0.2.1</version>
+  <version>0.2.2</version>
   <packaging>mule-extension</packaging>
   <name>mule-pdf-module</name>
 
@@ -21,7 +21,9 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <commons.io.version>2.18.0</commons.io.version>
-    <pdfbox.version>3.0.4</pdfbox.version>
+    <pdfbox.version>3.0.5</pdfbox.version>
+    <openhtmltopdf.version>1.1.28</openhtmltopdf.version>
+    <jsoup.version>1.20.1</jsoup.version>
     <mtf-tools.version>1.2.0</mtf-tools.version>
     <mule.maven.plugin.version>4.5.0</mule.maven.plugin.version>
     <skipTests>true</skipTests>
@@ -43,6 +45,36 @@
       <groupId>org.apache.pdfbox</groupId>
       <artifactId>pdfbox-io</artifactId>
       <version>${pdfbox.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>xmpbox</artifactId>
+      <version>${pdfbox.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>${jsoup.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.openhtmltopdf</groupId>
+      <artifactId>openhtmltopdf-core</artifactId>
+      <version>${openhtmltopdf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.openhtmltopdf</groupId>
+      <artifactId>openhtmltopdf-pdfbox</artifactId>
+      <version>${openhtmltopdf.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.pdfbox</groupId>
+          <artifactId>pdfbox</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.pdfbox</groupId>
+          <artifactId>xmpbox</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.mulesoft.munit</groupId>

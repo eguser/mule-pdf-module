@@ -1,6 +1,7 @@
 package org.mule.pdf.extension.internal;
 
 import org.mule.pdf.extension.internal.operation.ExtractPagesOperation;
+import org.mule.pdf.extension.internal.operation.HtmlToPdfOperation;
 import org.mule.pdf.extension.internal.operation.SplitDocumentOperation;
 import org.mule.runtime.extension.api.annotation.Extension;
 import org.mule.runtime.extension.api.annotation.Operations;
@@ -17,7 +18,7 @@ import org.mule.sdk.api.meta.JavaVersion;
 @Extension(name = "PDF")
 // @Configurations(PDFModuleConfiguration.class)
 @JavaVersionSupport({ JavaVersion.JAVA_17 })
-@Operations({ SplitDocumentOperation.class, ExtractPagesOperation.class })
+@Operations({ SplitDocumentOperation.class, ExtractPagesOperation.class, HtmlToPdfOperation.class })
 public class PDFModuleExtension {
 
 }
