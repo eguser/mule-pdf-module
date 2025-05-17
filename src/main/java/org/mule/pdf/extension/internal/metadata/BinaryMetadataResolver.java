@@ -1,7 +1,7 @@
 package org.mule.pdf.extension.internal.metadata;
 
 import org.mule.metadata.api.model.MetadataType;
-import org.mule.pdf.extension.internal.PDFModuleExtension;
+import org.mule.pdf.extension.internal.PdfModule;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.metadata.MetadataContext;
 import org.mule.runtime.api.metadata.MetadataResolvingException;
@@ -12,7 +12,7 @@ public class BinaryMetadataResolver implements InputTypeResolver<Void>, OutputTy
 
     @Override
     public String getCategoryName() {
-        return PDFModuleExtension.class.getName();
+        return PdfModule.class.getName();
     }
     
     @Override

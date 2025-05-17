@@ -6,7 +6,7 @@ import static org.hamcrest.core.Is.is;
 import org.junit.Test;
 import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 
-public class PDFModuleOperationsTestCase extends MuleArtifactFunctionalTestCase {
+public class PdfModuleOperationsTestCase extends MuleArtifactFunctionalTestCase {
 
   /**
    * Specifies the mule config xml with the flows that are going to be executed in the tests, this file lives in the test resources.

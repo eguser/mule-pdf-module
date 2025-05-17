@@ -1,6 +1,6 @@
 package org.mule.pdf.extension.api;
 
-public class PDFAttributes {
+public class PdfAttributes {
     private int pageCount;
     private int fileSize;
     private String fileName;

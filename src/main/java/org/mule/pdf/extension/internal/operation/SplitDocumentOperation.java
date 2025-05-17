@@ -15,7 +15,7 @@ import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.mule.pdf.extension.api.PDFAttributes;
+import org.mule.pdf.extension.api.PdfAttributes;
 import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
 import org.mule.runtime.extension.api.annotation.metadata.TypeResolver;
 import org.mule.runtime.extension.api.annotation.param.Content;
@@ -33,7 +33,7 @@ public class SplitDocumentOperation {
 
     @MediaType(value = MediaType.ANY, strict = false)
     @DisplayName("Split Document")
-    public List<Result<InputStream, PDFAttributes>> splitDocument(
+    public List<Result<InputStream, PdfAttributes>> splitDocument(
             //@Config PDFModuleConfiguration config,
             @DisplayName("Original PDF Payload")
                 @Content @TypeResolver(BinaryMetadataResolver.class)
@@ -56,7 +56,7 @@ public class SplitDocumentOperation {
                 int maxPages,
             StreamingHelper streamingHelper) throws Exception {
 
-        List<Result<InputStream, PDFAttributes>> pdfPartsList = new ArrayList<>();
+        List<Result<InputStream, PdfAttributes>> pdfPartsList = new ArrayList<>();
 
         String partFileName = FilenameUtils.removeExtension(fileName) + labelSeparator + splitLabel;
 
@@ -106,12 +106,12 @@ public class SplitDocumentOperation {
                         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
                         // Collect metadata
-                        PDFAttributes attributes = new PDFAttributes();
+                        PdfAttributes attributes = new PdfAttributes();
                         attributes.setPageCount(pdfDocumentPart.getNumberOfPages());
                         attributes.setFileSize(outputStream.size());
                         attributes.setFileName(partFileName + String.format("%03d",pdfPartsCounter) + ".pdf");
 
-                        pdfPartsList.add(Result.<InputStream, PDFAttributes>builder()
+                        pdfPartsList.add(Result.<InputStream, PdfAttributes>builder()
                                                .output(inputStream)
                                                .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
                                                .attributes(attributes)
@@ -132,10 +132,10 @@ public class SplitDocumentOperation {
             } else {
                 LOGGER.info( fileName + " has fewer pages than the " + maxPages + " configured in the Split Document operation.");
 
-                PDFAttributes attributes = new PDFAttributes();
+                PdfAttributes attributes = new PdfAttributes();
                 attributes.setPageCount(totalPages);
                 attributes.setFileName(fileName);
-                pdfPartsList.add(Result.<InputStream, PDFAttributes>builder()
+                pdfPartsList.add(Result.<InputStream, PdfAttributes>builder()
                                        .output(pdfPayload)
                                        .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
                                        .attributes(attributes)

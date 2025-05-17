@@ -19,6 +19,6 @@ import org.mule.sdk.api.meta.JavaVersion;
 // @Configurations(PDFModuleConfiguration.class)
 @JavaVersionSupport({ JavaVersion.JAVA_17 })
 @Operations({ SplitDocumentOperation.class, ExtractPagesOperation.class, HtmlToPdfOperation.class })
-public class PDFModuleExtension {
+public class PdfModule {
 
 }

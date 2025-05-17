@@ -10,7 +10,7 @@ import java.time.Instant;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
-import org.mule.pdf.extension.api.PDFAttributes;
+import org.mule.pdf.extension.api.PdfAttributes;
 import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
 import org.mule.runtime.extension.api.annotation.metadata.OutputResolver;
 import org.mule.runtime.extension.api.annotation.param.Content;
@@ -35,7 +35,7 @@ public class HtmlToPdfOperation {
                 @Content InputStream htmlPayload,
             @DisplayName("Output File Name") @Summary("The file name of the PDF Document we will produce.")
                 String outputPdfFileName,
-            CompletionCallback<InputStream, PDFAttributes> callback) throws Exception {
+            CompletionCallback<InputStream, PdfAttributes> callback) throws Exception {
 
         Long epochStart = Instant.now().toEpochMilli();
 
@@ -55,14 +55,14 @@ public class HtmlToPdfOperation {
             builder.toStream(outputStream);
             builder.run();
 
-            PDFAttributes responsePdfAttributes = new PDFAttributes();
+            PdfAttributes responsePdfAttributes = new PdfAttributes();
             responsePdfAttributes.setFileName(outputPdfFileName);
 
             InputStream responsePdfContent = new ByteArrayInputStream(outputStream.toByteArray());
 
             LOGGER.info("HTML to PDF completed in " + (Instant.now().toEpochMilli() - epochStart) + "ms.");
 
-            callback.success(Result.<InputStream, PDFAttributes>builder()
+            callback.success(Result.<InputStream, PdfAttributes>builder()
                     .output(responsePdfContent)
                     .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
                     .attributes(responsePdfAttributes)

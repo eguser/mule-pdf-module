@@ -12,7 +12,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.mule.pdf.extension.api.PDFAttributes;
+import org.mule.pdf.extension.api.PdfAttributes;
 import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
 import org.mule.runtime.extension.api.annotation.metadata.TypeResolver;
 import org.mule.runtime.extension.api.annotation.param.Content;
@@ -29,7 +29,7 @@ public class ExtractPagesOperation {
 
     @MediaType(value = MediaType.ANY, strict = false)
     @DisplayName("Extract Pages")
-    public Result<InputStream, PDFAttributes> extractPages(
+    public Result<InputStream, PdfAttributes> extractPages(
             //@Config PDFModuleConfiguration config,
             @DisplayName("Original PDF Payload")
                 @Content @TypeResolver(BinaryMetadataResolver.class)
@@ -59,12 +59,12 @@ public class ExtractPagesOperation {
             InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
             // Collect metadata
-            PDFAttributes attributes = new PDFAttributes();
+            PdfAttributes attributes = new PdfAttributes();
             attributes.setPageCount(extractedPagesDocument.getNumberOfPages());
             attributes.setFileSize(outputStream.size());
             attributes.setFileName(newFileName + "_extracted_" + ".pdf");
 
-            return Result.<InputStream, PDFAttributes>builder()
+            return Result.<InputStream, PdfAttributes>builder()
                          .output(inputStream)
                          .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
                          .attributes(attributes)
