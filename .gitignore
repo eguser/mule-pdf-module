@@ -42,8 +42,7 @@ local.properties
 # IDE-specific #
 # --------------- #
 target/
-.mule/**
-.mule/**/*
+.mule/
 .DS_Store
 velocity.log
 .vscode/**
