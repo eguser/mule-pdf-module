@@ -21,6 +21,7 @@ import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 import org.mule.runtime.extension.api.annotation.param.display.Example;
 import org.mule.runtime.extension.api.annotation.param.display.Summary;
 import org.mule.runtime.extension.api.runtime.operation.Result;
+import org.mule.runtime.extension.api.runtime.process.CompletionCallback;
 import org.mule.runtime.extension.api.runtime.streaming.StreamingHelper;
 import org.slf4j.Logger;
 
@@ -29,8 +30,7 @@ public class ExtractPagesOperation {
 
     @MediaType(value = MediaType.ANY, strict = false)
     @DisplayName("Extract Pages")
-    public Result<InputStream, PdfAttributes> extractPages(
-            //@Config PDFModuleConfiguration config,
+    public void extractPages(
             @DisplayName("Original PDF Payload")
                 @Content @TypeResolver(BinaryMetadataResolver.class)
                 InputStream pdfPayload,
@@ -39,14 +39,15 @@ public class ExtractPagesOperation {
             @DisplayName("Extract Pages") @Summary("Use 1-based indexing for page numbers. i.e. 0 is not allowed.") 
                 @Example("3-6,8,10-13")
                 String extractPages,
-            StreamingHelper streamingHelper) throws Exception {
+            StreamingHelper streamingHelper,
+            CompletionCallback<InputStream, PdfAttributes> completionCallback) throws Exception {
 
-        String newFileName = FilenameUtils.removeExtension(fileName);
         try (
             PDDocument originalPdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(pdfPayload));
             PDDocument extractedPagesDocument = new PDDocument();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()
         ) {
+            String newFileName = FilenameUtils.removeExtension(fileName);
             int totalPages = originalPdfDocument.getNumberOfPages();
 
             for (Integer pageIndex : getPageIndexes(extractPages)) {
@@ -64,11 +65,14 @@ public class ExtractPagesOperation {
             attributes.setFileSize(outputStream.size());
             attributes.setFileName(newFileName + "_extracted_" + ".pdf");
 
-            return Result.<InputStream, PdfAttributes>builder()
-                         .output(inputStream)
-                         .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
-                         .attributes(attributes)
-                         .build();
+            completionCallback.success(Result.<InputStream, PdfAttributes>builder()
+                    .output(inputStream)
+                    .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
+                    .attributes(attributes)
+                    .build());
+        } catch (Exception e) {
+            LOGGER.error("Extract Pages Operation failed with: " + e.getCause().getMessage());
+            completionCallback.error(e);
         }
     }
 
