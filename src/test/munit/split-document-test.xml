@@ -34,8 +34,8 @@
         <munit:validation>
             <munit-tools:assert-that 
                 expression="#[payload]"
-                is="#[MunitTools::hasSize(MunitTools::equalTo(${output.collectionSize}))]"
-                message="The payload should be an Array with ${output.collectionSize} elements."
+                is="#[MunitTools::hasSize(MunitTools::equalTo(${expected.output.collectionSize}))]"
+                message="The payload should be an Array with ${expected.output.collectionSize} elements."
             />
         </munit:validation>
     </munit:test>

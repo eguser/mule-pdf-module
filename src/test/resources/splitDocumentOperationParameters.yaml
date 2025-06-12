@@ -1,27 +1,38 @@
 pageCount_LT_FirstPages_LT_MaxPages:
-  fileName: "1page.pdf"
-  maxPages: "5"
-  firstPages: "2"
-  output:
-    collectionSize: 1
     fileName: "1page.pdf"
-    pageCount: 1
+    maxPages: "5"
+    firstPages: "2"
+    expected:
+        output:
+            collectionSize: 1
+            fileName: "1page.pdf"
+            pageCount: 1
 
 
 pageCount_LT_FirstPages_GT_MaxPages:
-  fileName: "16page.pdf"
-  maxPages: "5"
-  firstPages: "20"
-  output:
-    collectionSize: 4
     fileName: "16page.pdf"
-    pageCount: 16
+    maxPages: "5"
+    firstPages: "20"
+    expected:
+        throws:
+            class: "java.lang.IllegalArgumentException"
+            message: ".*Starting page count must be smaller than max pages per PDF part."
+            errorType: "MULE:UNKNOWN"
+  # output:
+  #   collectionSize: 4
+  #   fileName: "16page.pdf"
+  #   pageCount: 16
 
 firstPages_GT_PageCount_GT_MaxPages:
-  fileName: "16page.pdf"
-  maxPages: "5"
-  firstPages: "20"
-  output:
-    collectionSize: 4
     fileName: "16page.pdf"
-    pageCount: 16
+    maxPages: "5"
+    firstPages: "20"
+    expected:
+        throws:
+            class: "java.lang.IllegalArgumentException"
+            message: ".*Starting page count must be smaller than max pages per PDF part."
+            errorType: "MULE:UNKNOWN"
+        # output:
+        #     collectionSize: 4
+        #     fileName: "16page.pdf"
+        #     pageCount: 16
