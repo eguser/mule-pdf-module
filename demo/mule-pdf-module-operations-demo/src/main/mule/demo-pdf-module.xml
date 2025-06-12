@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+      xmlns:pdf="http://www.mulesoft.org/schema/mule/pdf" 
+      xmlns:file="http://www.mulesoft.org/schema/mule/file" 
+      xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" 
+      xmlns="http://www.mulesoft.org/schema/mule/core" 
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/pdf http://www.mulesoft.org/schema/mule/pdf/current/mule-pdf.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+
+  <file:config name="File_Config" doc:name="File Config" doc:id="be77f0ec-845f-44ff-9861-7fdfef3f1811" >
+    <file:connection />
+  </file:config>
+  <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="4817fe89-a66a-4163-8930-b87f6b65ceb0" >
+    <http:listener-connection host="0.0.0.0" port="8081" />
+  </http:listener-config>
+  <flow name="split-document-demo" doc:id="375b39de-ca47-4cd4-9c2f-2bfbf1193b42" initialState="started">
+    <http:listener doc:name="/split" doc:id="d2cf3a40-98dd-4908-9698-cbeb1a3457f0" config-ref="HTTP_Listener_config" path="/split"/>
+    <set-variable value="#[attributes.queryParams.'startPages']" doc:name="startWithPages" doc:id="35597158-3c99-43b5-a2a9-8d1246d78846" variableName="startWithPages"/>
+    <set-variable value="#[attributes.queryParams.'maxPages']" doc:name="maxPages" doc:id="8f0042aa-aa25-4104-9021-ba8641ec54e0" variableName="maxPages"/>
+    <file:list doc:name="List" doc:id="093bd84e-3bbf-47a5-bf94-6ba0aaee971f" directoryPath="pdf/in">
+      <repeatable-in-memory-iterable />
+      <file:matcher filenamePattern="*.pdf" directories="EXCLUDE" />
+    </file:list>
+    <foreach doc:name="For Each" doc:id="94f31c5b-c2e3-43e1-a69d-074593c3c375">
+      <logger level="INFO" doc:name="Logger" doc:id="54e1580c-5b2f-4dca-889c-d5099a673b9c" message='#["Read original PDF file " ++ (attributes.fileName default "")]' />
+      <pdf:split-document doc:name="Split Document" doc:id="3ff53ee0-8858-46e0-9e09-a65b810de16b" fileName="#[attributes.fileName]" splitLabel="Part" labelSeparator="_" maxPages="#[vars.maxPages]" firstPages="#[vars.startWithPages]"/>
+      <foreach doc:name="For Each" doc:id="a407aedf-0ac9-468f-bdf1-3d9a5f12222e" collection="#[payload]">
+				<async doc:name="Async" doc:id="4a22de2d-2930-441c-9bba-8700d5dadd8c" >
+          <file:write doc:name="Write" doc:id="9c39f671-67c3-4faf-8f9a-c1c3b58d8ba8" path='#["pdf/out/" ++ (attributes.fileName default "")]' config-ref="File_Config" />
+        </async>
+      </foreach>
+      <logger level="INFO" doc:name="Logger" doc:id="af937d88-de41-4244-b13b-c60f2b4dc354" message='#["Done splitting file " ++ (attributes.fileName default "")]' />
+    </foreach>
+    <ee:transform doc:name="Status: Finished" doc:id="a5573840-e616-4784-aa1f-ecc5d14d909b" >
+      <ee:message >
+        <ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "status": "finished"
+}]]></ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+  <flow name="extract-pages-demo" doc:id="85b5498d-465a-415a-a411-cd3f5e6aace1">
+    <http:listener doc:name="/extract" doc:id="854a58ea-40f3-4e2f-8732-01dc94c65177" config-ref="HTTP_Listener_config" path="/extract"/>
+    <set-variable value="#[attributes.queryParams.'extractPages']" doc:name="extractPages" doc:id="5220fab8-d7a7-4c48-b87c-1ed0cd99e5cb" variableName="extractPages"/>
+    <file:list doc:name="List" doc:id="7c5b8ad7-3b49-401f-97a0-7749bbfddc25" directoryPath="pdf/in" >
+      <repeatable-in-memory-iterable />
+      <file:matcher filenamePattern="*.pdf" directories="EXCLUDE" />
+    </file:list>
+    <foreach doc:name="For Each" doc:id="8b7a1ef9-f2af-41d2-a593-8773a2080d79" collection="#[payload]">
+      <logger level="INFO" doc:name="Logger" doc:id="d88b7d97-2a6a-4587-a5eb-013c273690f5" message='#["Read original PDF file " ++ (attributes.fileName default "")]' />
+      <pdf:extract-pages doc:name="Extract Pages" doc:id="909f21e0-3cef-4166-ab81-37c73ba2b7e7" extractPages="#[vars.extractPages]" fileName="#[attributes.fileName]">
+      </pdf:extract-pages>
+      <async doc:name="Async" doc:id="3232b1ec-11d0-4504-a9c0-fa6e63c74179">
+          <file:write doc:name="Write" doc:id="1bce807e-8fb0-495a-99a2-ecf6e431c369" path='#["pdf/out/" ++ (attributes.fileName default "")]' />
+        </async>
+      <logger level="INFO" doc:name="Logger" doc:id="b676d4ce-ada4-4adc-aa90-0eff384341d2" message='#["Done extracting pages from file " ++ (attributes.fileName default "")]' />
+    </foreach>
+    <ee:transform doc:name="Status: Finished" doc:id="006ea4ba-2f08-46b0-9632-17f3b74681b5" >
+      <ee:message >
+        <ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "status": "finished"
+}]]></ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+  <flow name="html-to-pdf-demo" doc:id="7251d7c2-5af7-437b-a7e1-e3ae1fbc130f" >
+    <http:listener doc:name="/html2pdf" doc:id="f14b1b04-93f8-4035-8d27-bea9bd1a97e8" config-ref="HTTP_Listener_config" path="/html2pdf" />
+    <set-variable variableName="invoiceData" value='#[readUrl("classpath://examples/invoiceData.json","application/json")]' doc:name="Invoice Data" doc:id="2b0657be-0c14-42f4-860a-35a6be11709e" />
+    <ee:transform doc:name="vars.invoiceLineItems" doc:id="fd5ddac2-fb56-4e15-84aa-9dd18be90a94" >
+      <ee:message >
+      </ee:message>
+      <ee:variables >
+        <ee:set-variable variableName="invoiceLineItems" ><![CDATA[%dw 2.0
+output application/xml writeDeclaration = false
+---
+{
+  tbody: {
+    (vars.invoiceData.invoiceLineItems map (lineItem, idxLineItem) -> {
+      tr: {
+        td: lineItem.description,
+        td: lineItem.quantity,
+        td: lineItem.unitPrice,
+        td: lineItem.total
+      }
+    })
+  }
+}]]></ee:set-variable>
+      </ee:variables>
+    </ee:transform>
+    <parse-template doc:name="invoiceTemplate.html" doc:id="fc8552bf-f03a-4acb-8cb5-4a52163a26a1" location="web/invoiceTemplate.html"/>
+    <logger level="INFO" doc:name="Logger" doc:id="788ea590-619d-40dd-9172-bcb246c6ab52" message='#["Start converting HTML to PDF"]' />
+		<pdf:html-to-pdf doc:name="Invoice " doc:id="38a79033-cd77-4180-a182-c961e56d5172" outputPdfFileName='#[vars.invoiceData.invoiceBillTo ++ " - invoice.pdf"]'>
+    </pdf:html-to-pdf>
+    <async doc:name="Async" doc:id="a20beb9e-bf97-4b0e-96ef-b49d61104b11" >
+      <file:write doc:name="Invoice PDF " doc:id="136d2426-c875-4b90-a36f-863dcdca9894" path='#["pdf/out/" ++ (attributes.fileName default "")]' />
+    </async>
+    <logger level="INFO" doc:name="Logger" doc:id="5eb82aad-af7f-403e-b35f-10695848e02a" message='#["Done converting HTML to PDF"]' />
+		<ee:transform doc:name="Status: Finished" doc:id="277c5b50-ef7f-48ff-9caa-569b083a9d80" >
+      <ee:message >
+        <ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "status": "finished"
+}]]></ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+</mule>

@@ -1,0 +1,22 @@
+{
+  "invoiceNumber"  : "INV-123245",
+  "invoiceDate"    : "2024-12-05",
+  "invoiceDueDate" : "2024-12-05",
+  "invoiceBillTo"  : "Jane Doe",
+  "invoiceAddress" : "123 Main Street, Springfield",
+  "invoiceLineItems" : [
+    {
+      "description"  : "Web Development Services",
+      "quantity"     : "50",
+      "unitPrice"    : "10",
+      "total"        : "500"
+    },
+    {
+      "description"  : "SEO Optimization",
+      "quantity"     : "5",
+      "unitPrice"    : "100",
+      "total"        : "500"
+    }
+  ],
+  "invoiceTaxRate"   : "10%"
+}
