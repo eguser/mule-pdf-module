@@ -1,0 +1,9 @@
+pageCount_LT_FirstPages_LT_MaxPages:
+    fileName: "1page.pdf"
+    maxPages: "5"
+    firstPages: "2"
+    expected:
+        output:
+            collectionSize: 1
+            fileName: "1page.pdf"
+            pageCount: 1

@@ -14,15 +14,20 @@
     </pdf:config>
     -->
 
-    <munit:config name="split-document">
-        <munit:parameterizations file= "splitDocumentOperationParameters.yaml"/>
+    <munit:config name="split-document-failure">
+        <munit:parameterizations file="splitDocumentOperationFailure.yaml"/>
     </munit:config>
 
-    <munit:test name="splitDocument" >
-        <munit:execution>
+    <munit:test name="splitDocumentFailure" 
+                expectedErrorType="${expected.throws.errorType}"
+                expectedException="${expected.throws.class}"
+                expectedErrorDescription="${expected.throws.message}">
+        <munit:behavior>
             <set-variable variableName="fileName" value="${fileName}" />
             <set-payload 
                 value="#[MunitTools::getResourceAsReusableStream(vars.fileName)]"/>
+        </munit:behavior>
+        <munit:execution>
             <pdf:split-document 
                 fileName="${fileName}"
                 splitLabel="Part" 
@@ -31,13 +36,5 @@
                 firstPages="${firstPages}"
             />
         </munit:execution>
-        <munit:validation>
-            <munit-tools:assert-that 
-                expression="#[payload]"
-                is="#[MunitTools::hasSize(MunitTools::equalTo(${expected.output.collectionSize}))]"
-                message="The payload should be an Array with ${expected.output.collectionSize} elements."
-            />
-        </munit:validation>
     </munit:test>
-
 </mule>
