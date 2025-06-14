@@ -6,6 +6,7 @@ import org.mule.pdf.extension.api.PdfAttributes;
 import org.mule.pdf.extension.internal.connection.PdfInternalConnection;
 import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
 import org.mule.pdf.extension.internal.operation.paging.SplitPdfPagingProvider;
+import org.mule.runtime.api.streaming.CursorProvider;
 import org.mule.runtime.api.util.Preconditions;
 import org.mule.runtime.extension.api.annotation.metadata.TypeResolver;
 import org.mule.runtime.extension.api.annotation.param.Content;
@@ -23,7 +24,7 @@ public class SplitDocumentOperation {
 
     @MediaType(value = MediaType.ANY, strict = false)
     @DisplayName("Split Document")
-    public PagingProvider<PdfInternalConnection, Result<InputStream, PdfAttributes>> splitDocument(
+    public PagingProvider<PdfInternalConnection, Result<CursorProvider, PdfAttributes>> splitDocument(
             //@Config PDFModuleConfiguration config,
             @DisplayName("Original PDF Payload")
                 @Content @TypeResolver(BinaryMetadataResolver.class)
@@ -48,7 +49,7 @@ public class SplitDocumentOperation {
         
         Preconditions.checkArgument(maxPages > firstPages, "Starting page count must be smaller than max pages per PDF part.");
         
-        return new SplitPdfPagingProvider(pdfPayload, fileName, splitLabel, labelSeparator, maxPages, firstPages);
+        return new SplitPdfPagingProvider(pdfPayload, fileName, splitLabel, labelSeparator, maxPages, firstPages, streamingHelper);
 
         }
 

@@ -21,17 +21,20 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.mule.pdf.extension.api.PdfAttributes;
 import org.mule.pdf.extension.internal.connection.PdfInternalConnection;
 import org.mule.runtime.api.exception.MuleException;
+import org.mule.runtime.api.streaming.CursorProvider;
 import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.streaming.PagingProvider;
+import org.mule.runtime.extension.api.runtime.streaming.StreamingHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnection, Result<InputStream, PdfAttributes>> {
+public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnection, Result<CursorProvider, PdfAttributes>> {
     private static final Logger logger = LoggerFactory.getLogger(SplitPdfPagingProvider.class);
     private final InputStream originalPdfPayload;
     private final String pdfPartFileName;
     private final int pdfPartMaxPages;
     private final int pdfPartStartingPages;
+    private final StreamingHelper streamingHelper;
     private final AtomicBoolean isOriginalPdfDocumentLoaded = new AtomicBoolean(false);
 
     private PDDocument originalPdfDocument;
@@ -42,18 +45,19 @@ public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnect
     private int totalPdfParts;
     private int pdfPartCounter = 1;
 
-    public SplitPdfPagingProvider(InputStream pdfPayload, String fileName, String splitLabel, String labelSeparator,  int partMaxPages, int partStartingPages) {
+    public SplitPdfPagingProvider(InputStream pdfPayload, String fileName, String splitLabel, String labelSeparator,  int partMaxPages, int partStartingPages, StreamingHelper streamingHelper) {
         this.originalPdfPayload = pdfPayload;
         this.pdfPartFileName = FilenameUtils.removeExtension(fileName) + labelSeparator + splitLabel;
         this.pdfPartMaxPages = partMaxPages;
         this.pdfPartStartingPages = partStartingPages;
+        this.streamingHelper = streamingHelper;
     }
 
     Splitter splitter = new Splitter();
     PDFMergerUtility pdfMerger = new PDFMergerUtility();
 
     @Override
-    public List<Result<InputStream, PdfAttributes>> getPage(PdfInternalConnection dummyConnection) {
+    public List<Result<CursorProvider, PdfAttributes>> getPage(PdfInternalConnection dummyConnection) {
         if (isOriginalPdfDocumentLoaded.compareAndSet(false, true)) {
             logger.info("Initiating Split Document...");
             splitPdfDocument();
@@ -61,7 +65,7 @@ public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnect
         
         if (pdfPartsIterator.hasNext()) {
             logger.info("Working on next response Page");
-            List<Result<InputStream, PdfAttributes>> page = new ArrayList<>();
+            List<Result<CursorProvider, PdfAttributes>> page = new ArrayList<>();
             for (int i = 0; i < 5 && pdfPartsIterator.hasNext(); i++) {
 
                 PDDocument pdfDocumentPart = pdfPartsIterator.next();
@@ -73,8 +77,8 @@ public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnect
 
                 pdfPartCounter++;
 
-                page.add(Result.<InputStream, PdfAttributes>builder()
-                    .output(getPdfPartAsStream(pdfDocumentPart))
+                page.add(Result.<CursorProvider, PdfAttributes>builder()
+                    .output((CursorProvider) streamingHelper.resolveCursorProvider(getPdfPartAsStream(pdfDocumentPart)))
                     .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
                     .attributes(attributes)
                     .build());
