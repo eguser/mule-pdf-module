@@ -37,6 +37,7 @@ public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnect
     private final StreamingHelper streamingHelper;
     private final AtomicBoolean isOriginalPdfDocumentLoaded = new AtomicBoolean(false);
 
+    private long operationStartTime = System.nanoTime();
     private PDDocument originalPdfDocument;
     private int originalPdfTotalPages;
     private PDDocument pdfPartStartingDocument;
@@ -45,7 +46,7 @@ public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnect
     private int totalPdfParts;
     private int pdfPartCounter = 1;
 
-    public SplitPdfPagingProvider(InputStream pdfPayload, String fileName, String splitLabel, String labelSeparator,  int partMaxPages, int partStartingPages, StreamingHelper streamingHelper) {
+    public SplitPdfPagingProvider(InputStream pdfPayload, String fileName, String splitLabel, String labelSeparator, int partMaxPages, int partStartingPages, StreamingHelper streamingHelper) {
         this.originalPdfPayload = pdfPayload;
         this.pdfPartFileName = FilenameUtils.removeExtension(fileName) + labelSeparator + splitLabel;
         this.pdfPartMaxPages = partMaxPages;
@@ -62,9 +63,9 @@ public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnect
             logger.info("Initiating Split Document...");
             splitPdfDocument();
         }
-        
+
         if (pdfPartsIterator.hasNext()) {
-            logger.info("Working on next response Page");
+            long startPagination = System.nanoTime();
             List<Result<CursorProvider, PdfAttributes>> page = new ArrayList<>();
             for (int i = 0; i < 5 && pdfPartsIterator.hasNext(); i++) {
 
@@ -82,16 +83,20 @@ public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnect
                     .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
                     .attributes(attributes)
                     .build());
-
             }
+
+            logger.info("Sending {} PDF parts in {}ms.", page.size(), getElapsedMs(startPagination));
+
             return page;
         } else {
+            logger.info("Processed everything in {}ms", getElapsedMs(operationStartTime));
             return Collections.emptyList();
         }
 
     }
 
     private void splitPdfDocument() {
+        final long splitStartTime = System.nanoTime();
         try {
 
             this.originalPdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(originalPdfPayload));
@@ -105,8 +110,9 @@ public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnect
                 for (int i = 0; i < pdfPartStartingPages; i++) {
                     pdfPartStartingDocument.addPage(originalPdfDocument.getPage(i));
                 }
+                logger.info("Creating starting document with {} pages took {}ms",
+                        this.pdfPartStartingPages, getElapsedMs(splitStartTime));
                 pdfMerger.setDocumentMergeMode(PDFMergerUtility.DocumentMergeMode.OPTIMIZE_RESOURCES_MODE);
-                logger.info("Starting document has {} pages", pdfPartStartingDocument.getNumberOfPages());
             } else {
                 logger.info("Splitting every {} ", pdfPartMaxPages);
                 splitter.setSplitAtPage(pdfPartMaxPages);
@@ -115,14 +121,16 @@ public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnect
             this.totalPdfParts = ((Collection<?>) originalPdfDocumentParts).size();
             pdfPartsIterator = originalPdfDocumentParts.iterator();
 
+            logger.info("Splitting completed in {}ms", getElapsedMs(splitStartTime));
         } catch (IOException e) {
             logger.error("Error splitting PDF file:");
             e.printStackTrace();
         }
 
     }
-    
+
     private InputStream getPdfPartAsStream(PDDocument pdfDocumentPart) {
+        final long pdfAsStreamStartTime = System.nanoTime();
 
         try (
             PDDocument mergeStartingAndPart = new PDDocument();
@@ -132,13 +140,16 @@ public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnect
                 pdfMerger.appendDocument(mergeStartingAndPart, pdfPartStartingDocument);
                 pdfMerger.appendDocument(mergeStartingAndPart, pdfDocumentPart);
                 mergeStartingAndPart.save(outputStream);
+
+                logger.info("Merging PDF Part with starting Pages took {}ms", getElapsedMs(pdfAsStreamStartTime));
             } else {
                 pdfDocumentPart.save(outputStream);
             }
-            
+
             InputStream pdfPartStream = new ByteArrayInputStream(outputStream.toByteArray());
 
             pdfDocumentPart.close();
+            logger.info("Returning PDF Part InputStream in {}ms", getElapsedMs(pdfAsStreamStartTime));
             return pdfPartStream;
 
         } catch (IOException e) {
@@ -158,12 +169,17 @@ public class SplitPdfPagingProvider implements PagingProvider<PdfInternalConnect
     public void close(PdfInternalConnection dummyConnection) throws MuleException {
         logger.info("Closing resources...");
         try {
+            logger.info("Processed everything in {}ms", getElapsedMs(operationStartTime));
             pdfPartStartingDocument.close();
             originalPdfDocument.close();
         } catch (IOException e) {
+            logger.info("pagingProvider.close() failed. Processed everything in {}ms", getElapsedMs(operationStartTime));
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
+    private double getElapsedMs(long startNanos) {
+        return (System.nanoTime() - startNanos) / 1000000.0;
+    }
 }
