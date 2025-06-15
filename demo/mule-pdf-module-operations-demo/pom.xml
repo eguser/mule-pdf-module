@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.mule.modules</groupId>
       <artifactId>mule-pdf-module</artifactId>
-      <version>0.2.3</version>
+      <version>0.2.4</version>
       <classifier>mule-plugin</classifier>
     </dependency>
     <dependency>

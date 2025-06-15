@@ -1,0 +1,3 @@
+directory:
+  inputPath: "pdf/in"  # this will be under current USER directory like /Users/<USERNAME>/pdf/in
+  outputPath: "pdf/out"
