@@ -1,11 +1,22 @@
 package org.mule.pdf.extension.internal.operation;
 
-import java.io.InputStream;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
+import org.apache.pdfbox.multipdf.Splitter;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.mule.pdf.extension.api.PdfAttributes;
 import org.mule.pdf.extension.internal.connection.PdfInternalConnection;
 import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
-import org.mule.pdf.extension.internal.operation.paging.SplitPdfPagingProvider;
+import org.mule.pdf.extension.internal.operation.paging.PdfPagingProvider;
 import org.mule.runtime.api.streaming.CursorProvider;
 import org.mule.runtime.api.util.Preconditions;
 import org.mule.runtime.extension.api.annotation.metadata.TypeResolver;
@@ -17,11 +28,15 @@ import org.mule.runtime.extension.api.annotation.param.display.Summary;
 import org.mule.runtime.extension.api.runtime.operation.Result;
 import org.mule.runtime.extension.api.runtime.streaming.PagingProvider;
 import org.mule.runtime.extension.api.runtime.streaming.StreamingHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.typesafe.config.Optional;
 
 public class SplitDocumentOperation {
+    private static final Logger logger = LoggerFactory.getLogger(SplitDocumentOperation.class);
 
+    @SuppressWarnings("rawtypes")
     @MediaType(value = MediaType.ANY, strict = false)
     @DisplayName("Split Document")
     public PagingProvider<PdfInternalConnection, Result<CursorProvider, PdfAttributes>> splitDocument(
@@ -48,9 +63,55 @@ public class SplitDocumentOperation {
             StreamingHelper streamingHelper) throws Exception {
         
         Preconditions.checkArgument(maxPages > firstPages, "Starting page count must be smaller than max pages per PDF part.");
+        final long operationStartTime = System.nanoTime();
+        final PDDocument originalPdfDocument;
+        final int originalPdfTotalPages;
+        final Iterator<PDDocument> pdfPartsIterator;
+        final int outputPdfParts;
+        Iterable<PDDocument> originalPdfDocumentParts = new LinkedList<PDDocument>();
+        byte[] startingPagesBytes = null;
+        String pdfPartFileNamePrefix = FilenameUtils.removeExtension(fileName) + labelSeparator + splitLabel;
         
-        return new SplitPdfPagingProvider(pdfPayload, fileName, splitLabel, labelSeparator, maxPages, firstPages, streamingHelper);
+        Splitter splitter = new Splitter();
 
+        try {
+            originalPdfDocument = Loader.loadPDF(new RandomAccessReadBuffer(pdfPayload));
+            originalPdfTotalPages = originalPdfDocument.getNumberOfPages();
+
+            if (firstPages > 0 && firstPages < originalPdfTotalPages) {
+                splitter.setStartPage(firstPages + 1);
+                splitter.setSplitAtPage(maxPages - firstPages);
+                PDDocument pdfPartStartingDocument = new PDDocument();
+
+                for (int i = 0; i < firstPages; i++) {
+                    pdfPartStartingDocument.addPage(originalPdfDocument.getPage(i));
+                }
+
+                try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    pdfPartStartingDocument.save(baos);
+                    startingPagesBytes = baos.toByteArray(); // Store bytes for later use
+                    pdfPartStartingDocument.close();
+                    logger.debug("Starting {} pages for {} pre-serialized to {} bytes.",
+                                    firstPages, fileName, startingPagesBytes.length);
+                }
+                logger.info("Created starting document in {}ms", getElapsedMs(operationStartTime));
+            } else {
+                logger.info("Will split {} every {} pages.", fileName, maxPages);
+                splitter.setSplitAtPage(maxPages);
+            }
+            originalPdfDocumentParts = splitter.split(originalPdfDocument);
+            outputPdfParts = ((Collection<?>) originalPdfDocumentParts).size();
+            pdfPartsIterator = originalPdfDocumentParts.iterator();
+
+        } finally {
+            logger.info("Splitting original PDf document took {}ms", getElapsedMs(operationStartTime));
         }
+        
+        return new PdfPagingProvider(originalPdfDocument, pdfPartsIterator, outputPdfParts, operationStartTime, startingPagesBytes, fileName, pdfPartFileNamePrefix, streamingHelper);
 
+    }
+
+    private double getElapsedMs(long startNanos) {
+        return NANOSECONDS.toMillis(System.nanoTime() - startNanos);
+    }
 }
