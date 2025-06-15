@@ -14,7 +14,7 @@
     </pdf:config>
     -->
 
-    <munit:config name="split-document-failure">
+    <munit:config name="SplitDocumentOperationNegativeTest" minMuleVersion="4.9.0">
         <munit:parameterizations file="splitDocumentOperationFailure.yaml"/>
     </munit:config>
 

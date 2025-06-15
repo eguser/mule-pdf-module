@@ -7,3 +7,12 @@ pageCount_LT_FirstPages_LT_MaxPages:
             collectionSize: 1
             fileName: "1page.pdf"
             pageCount: 1
+
+splitPartsCollectionMoreThanFive:
+    fileName: "16page.pdf"
+    maxPages: "3"
+    firstPages: "1"
+    expected:
+       output:
+          collectionSize: 5
+          pageCount: 3

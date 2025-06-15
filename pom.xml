@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -15,7 +17,6 @@
   <packaging>mule-extension</packaging>
   <name>mule-pdf-module</name>
 
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -27,8 +28,9 @@
     <mtf-tools.version>1.2.0</mtf-tools.version>
     <mule.maven.plugin.version>4.5.0</mule.maven.plugin.version>
     <skipTests>true</skipTests>
+    <munit.version>3.4.0</munit.version>
+    <weave.assertions.version>1.2.1</weave.assertions.version>
   </properties>
-
 
   <dependencies>
     <dependency>
@@ -83,17 +85,36 @@
       <classifier>mule-plugin</classifier>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.mulesoft.munit</groupId>
+      <artifactId>munit-runner</artifactId>
+      <version>${munit.version}</version>
+      <classifier>mule-plugin</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.mulesoft.munit</groupId>
+      <artifactId>munit-tools</artifactId>
+      <version>${munit.version}</version>
+      <classifier>mule-plugin</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.weave</groupId>
+      <artifactId>assertions</artifactId>
+      <version>${weave.assertions.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
-<!--
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
       <plugin>
-         <groupId>com.mulesoft.munit</groupId>
-         <artifactId>munit-extensions-maven-plugin</artifactId>
+        <groupId>com.mulesoft.munit</groupId>
+        <artifactId>munit-extensions-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>com.mulesoft.munit.tools</groupId>
@@ -124,7 +145,6 @@
       </plugin>
     </plugins>
   </build>
--->
 
   <repositories>
     <repository>

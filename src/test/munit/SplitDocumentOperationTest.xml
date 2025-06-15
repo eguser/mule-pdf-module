@@ -14,19 +14,31 @@
     </pdf:config>
     -->
 
-    <munit:config name="extract-pages"/>
+    <munit:config name="SplitDocumentOperationTest.xml" minMuleVersion="4.9.0">
+        <munit:parameterizations file="splitDocumentOperationSuccess.yaml"/>
+    </munit:config>
 
-    <munit:test name="extractPages">
+    <munit:test name="splitDocumentSuccess">
+        <munit:behavior>
+            <set-variable variableName="fileName" value="${fileName}" />
+            <set-payload 
+                value="#[MunitTools::getResourceAsReusableStream(vars.fileName)]"/>
+        </munit:behavior>
         <munit:execution>
-            <set-variable variableName="pageCount" value="1"/>
-            <set-variable variableName="fileName" value="#[vars.pageCount as String ++ 'page.pdf']" />
-            <set-variable variableName="maxPages" value="5"/>
-            <set-payload
-                value="#[MunitTools::getResourceAsReusableStream(vars.fileName)]" />
-            <pdf:extract-pages extractPages="1" fileName="#[vars.fileName]"/>
+            <pdf:split-document 
+                fileName="${fileName}"
+                splitLabel="Part" 
+                labelSeparator="_" 
+                maxPages="${maxPages}"
+                firstPages="${firstPages}"
+            />
         </munit:execution>
         <munit:validation>
-            <munit-tools:assert-equals actual="#[attributes.fileName]" expected="#[vars.pageCount ++ 'page_extracted_.pdf']"/>
+            <munit-tools:assert-that 
+                expression="#[payload]"
+                is="#[MunitTools::hasSize(MunitTools::equalTo(${expected.output.collectionSize}))]"
+                message="The payload should be an Array with ${expected.output.collectionSize} elements."
+            />
         </munit:validation>
     </munit:test>
 
