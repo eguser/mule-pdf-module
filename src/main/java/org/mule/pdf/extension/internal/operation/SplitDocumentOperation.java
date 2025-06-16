@@ -4,9 +4,11 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.pdfbox.Loader;
@@ -17,6 +19,7 @@ import org.mule.pdf.extension.api.PdfAttributes;
 import org.mule.pdf.extension.internal.connection.PdfInternalConnection;
 import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
 import org.mule.pdf.extension.internal.operation.paging.PdfPagingProvider;
+import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.streaming.CursorProvider;
 import org.mule.runtime.api.util.Preconditions;
 import org.mule.runtime.extension.api.annotation.metadata.TypeResolver;
@@ -36,7 +39,7 @@ import com.typesafe.config.Optional;
 public class SplitDocumentOperation {
     private static final Logger logger = LoggerFactory.getLogger(SplitDocumentOperation.class);
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes" })
     @MediaType(value = MediaType.ANY, strict = false)
     @DisplayName("Split Document")
     public PagingProvider<PdfInternalConnection, Result<CursorProvider, PdfAttributes>> splitDocument(
@@ -107,8 +110,36 @@ public class SplitDocumentOperation {
             logger.info("Splitting original PDf document took {}ms", getElapsedMs(operationStartTime));
         }
         
-        return new PdfPagingProvider(originalPdfDocument, pdfPartsIterator, outputPdfParts, operationStartTime, startingPagesBytes, fileName, pdfPartFileNamePrefix, streamingHelper);
+        if (outputPdfParts > 1) {
+            return new PdfPagingProvider(originalPdfDocument, pdfPartsIterator, outputPdfParts, operationStartTime,
+                    startingPagesBytes, fileName, pdfPartFileNamePrefix, streamingHelper);
+        } else {
+            return new PagingProvider<PdfInternalConnection, Result<CursorProvider, PdfAttributes>>() {
 
+                @Override
+                public void close(PdfInternalConnection arg0) throws MuleException {
+                    logger.info("Returning {} without splitting in {}ms", fileName,
+                            getElapsedMs(operationStartTime));
+                }
+
+                @Override
+                public List<Result<CursorProvider, PdfAttributes>> getPage(PdfInternalConnection arg0) {
+                    List<Result<CursorProvider, PdfAttributes>> singleResult = new ArrayList<>();
+                    singleResult.add(Result.<CursorProvider, PdfAttributes>builder()
+                                .output((CursorProvider) streamingHelper.resolveCursorProvider(pdfPayload))
+                                .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
+                                .attributes(null)
+                                .build());
+                    
+                    return singleResult;
+                }
+
+                @Override
+                public java.util.Optional<Integer> getTotalResults(PdfInternalConnection arg0) {
+                    return java.util.Optional.of(1);
+                }
+            };
+        }
     }
 
     private double getElapsedMs(long startNanos) {

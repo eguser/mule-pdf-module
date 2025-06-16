@@ -13,7 +13,7 @@
 
   <groupId>org.mule.modules</groupId>
   <artifactId>mule-pdf-module</artifactId>
-  <version>0.2.4</version>
+  <version>0.2.5</version>
   <packaging>mule-extension</packaging>
   <name>mule-pdf-module</name>
 
@@ -78,33 +78,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>com.mulesoft.munit</groupId>
-      <artifactId>mtf-tools</artifactId>
-      <version>${mtf-tools.version}</version>
-      <classifier>mule-plugin</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.mulesoft.munit</groupId>
-      <artifactId>munit-runner</artifactId>
-      <version>${munit.version}</version>
-      <classifier>mule-plugin</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.mulesoft.munit</groupId>
-      <artifactId>munit-tools</artifactId>
-      <version>${munit.version}</version>
-      <classifier>mule-plugin</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mule.weave</groupId>
-      <artifactId>assertions</artifactId>
-      <version>${weave.assertions.version}</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -115,8 +88,53 @@
       <plugin>
         <groupId>com.mulesoft.munit</groupId>
         <artifactId>munit-extensions-maven-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>com.mulesoft.munit</groupId>
+            <artifactId>mtf-tools</artifactId>
+            <version>${mtf-tools.version}</version>
+            <classifier>mule-plugin</classifier>
+          </dependency>
+          <dependency>
+            <groupId>com.mulesoft.munit</groupId>
+            <artifactId>munit-runner</artifactId>
+            <version>${munit.version}</version>
+            <classifier>mule-plugin</classifier>
+          </dependency>
+          <dependency>
+            <groupId>com.mulesoft.munit</groupId>
+            <artifactId>munit-tools</artifactId>
+            <version>${munit.version}</version>
+            <classifier>mule-plugin</classifier>
+          </dependency>
+          <dependency>
+            <groupId>org.mule.weave</groupId>
+            <artifactId>assertions</artifactId>
+            <version>${weave.assertions.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven.enforcer.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-rules</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.9,4.0)</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- <plugin>
         <groupId>com.mulesoft.munit.tools</groupId>
         <artifactId>munit-maven-plugin</artifactId>
         <version>${munit.version}</version>
@@ -142,7 +160,7 @@
             <dynamicPort>http.port</dynamicPort>
           </dynamicPorts>
         </configuration>
-      </plugin>
+      </plugin> -->
     </plugins>
   </build>
 
