@@ -25,6 +25,7 @@ import org.mule.runtime.api.util.Preconditions;
 import org.mule.runtime.extension.api.annotation.metadata.TypeResolver;
 import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.extension.api.annotation.param.MediaType;
+import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;
 import org.mule.runtime.extension.api.annotation.param.display.Example;
 import org.mule.runtime.extension.api.annotation.param.display.Summary;
@@ -33,8 +34,6 @@ import org.mule.runtime.extension.api.runtime.streaming.PagingProvider;
 import org.mule.runtime.extension.api.runtime.streaming.StreamingHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.typesafe.config.Optional;
 
 public class SplitDocumentOperation {
     private static final Logger logger = LoggerFactory.getLogger(SplitDocumentOperation.class);
