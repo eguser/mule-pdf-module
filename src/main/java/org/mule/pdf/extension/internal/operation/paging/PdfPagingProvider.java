@@ -1,7 +1,5 @@
 package org.mule.pdf.extension.internal.operation.paging;
 
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,6 +17,7 @@ import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.mule.pdf.extension.api.PdfAttributes;
 import org.mule.pdf.extension.internal.connection.PdfInternalConnection;
+import org.mule.pdf.extension.internal.utils.TimeUtils;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.streaming.CursorProvider;
 import org.mule.runtime.extension.api.runtime.operation.Result;
@@ -103,7 +102,8 @@ public class PdfPagingProvider
                 }
             }
 
-            logger.debug("Page of {} PDF parts sent in {}ms.", page.size(), getElapsedMs(startPagination));
+            logger.debug("Page of {} PDF parts sent in {}ms.", page.size(), 
+                                    TimeUtils.getElapsedMillis(startPagination));
 
             return page;
         } else {
@@ -126,12 +126,13 @@ public class PdfPagingProvider
 
                 startingPagesAndCurrentPdfParDocument.close();
 
-                logger.debug("Merged starting pages with current PDF Part in {}ms", getElapsedMs(pdfAsStreamStartTime));
+                logger.debug("Merged starting pages with current PDF Part in {}ms", 
+                                    TimeUtils.getElapsedMillis(pdfAsStreamStartTime));
             } else {
                 pdfDocumentPart.save(outputStream);
             }
 
-            logger.debug("PDF Part InputStream created in {}ms", getElapsedMs(pdfAsStreamStartTime));
+            logger.debug("PDF Part InputStream created in {}ms", TimeUtils.getElapsedMillis(pdfAsStreamStartTime));
 
             return (InputStream) new ByteArrayInputStream(outputStream.toByteArray());
 
@@ -151,7 +152,7 @@ public class PdfPagingProvider
 
     @Override
     public void close(PdfInternalConnection dummyConnection) throws MuleException {
-        logger.info("Finished Split Document operation for {} in {}ms", this.originalPdfFileName, getElapsedMs(operationStartTime));
+        logger.info("Finished Split Document operation for {} in {}ms", this.originalPdfFileName, TimeUtils.getElapsedMillis(operationStartTime));
         try {
             originalPdfDocument.close();
         } catch (IOException e) {
@@ -159,9 +160,5 @@ public class PdfPagingProvider
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    private double getElapsedMs(long startNanos) {
-        return NANOSECONDS.toMillis(System.nanoTime() - startNanos);
     }
 }

@@ -1,7 +1,5 @@
 package org.mule.pdf.extension.internal.operation;
 
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
-
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,6 +17,7 @@ import org.mule.pdf.extension.api.PdfAttributes;
 import org.mule.pdf.extension.internal.connection.PdfInternalConnection;
 import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
 import org.mule.pdf.extension.internal.operation.paging.PdfPagingProvider;
+import org.mule.pdf.extension.internal.utils.TimeUtils;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.streaming.CursorProvider;
 import org.mule.runtime.api.util.Preconditions;
@@ -96,7 +95,7 @@ public class SplitDocumentOperation {
                     logger.debug("Starting {} pages for {} pre-serialized to {} bytes.",
                                     firstPages, fileName, startingPagesBytes.length);
                 }
-                logger.info("Created starting document in {}ms", getElapsedMs(operationStartTime));
+                logger.info("Created starting document in {}ms", TimeUtils.getElapsedMillis(operationStartTime));
             } else {
                 logger.info("Will split {} every {} pages.", fileName, maxPages);
                 splitter.setSplitAtPage(maxPages);
@@ -106,7 +105,7 @@ public class SplitDocumentOperation {
             pdfPartsIterator = originalPdfDocumentParts.iterator();
 
         } finally {
-            logger.info("Splitting original PDf document took {}ms", getElapsedMs(operationStartTime));
+            logger.info("Splitting original PDf document took {}ms", TimeUtils.getElapsedMillis(operationStartTime));
         }
         
         if (outputPdfParts > 1) {
@@ -118,7 +117,7 @@ public class SplitDocumentOperation {
                 @Override
                 public void close(PdfInternalConnection arg0) throws MuleException {
                     logger.info("Returning {} without splitting in {}ms", fileName,
-                            getElapsedMs(operationStartTime));
+                                TimeUtils.getElapsedMillis(operationStartTime));
                 }
 
                 @Override
@@ -139,9 +138,5 @@ public class SplitDocumentOperation {
                 }
             };
         }
-    }
-
-    private double getElapsedMs(long startNanos) {
-        return NANOSECONDS.toMillis(System.nanoTime() - startNanos);
     }
 }
