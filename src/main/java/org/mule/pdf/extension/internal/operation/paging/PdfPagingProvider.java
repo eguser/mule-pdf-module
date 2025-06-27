@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,8 +46,8 @@ public class PdfPagingProvider
     public PdfPagingProvider(
                     PDDocument originalPdfDocument,
                     Iterator<PDDocument> pdfPartsIterator,
-                    int outputPdfParts,
                     long operationStartTime,
+                    int outputPdfParts,
                     byte[] startingPagesBytes,
                     String originalPdfFileName,
                     String pdfPartFileNameSuffix,
@@ -67,48 +66,45 @@ public class PdfPagingProvider
 
     @Override
     public List<Result<CursorProvider, PdfAttributes>> getPage(PdfInternalConnection dummyConnection) {
+        long startPagination = System.nanoTime();
+
         if (isOriginalPdfDocumentLoaded.compareAndSet(false, true)) {
-            logger.info("Initiating Paging Operation for {}", this.originalPdfFileName);
+            logger.info("Starting Paging Operation for {}", this.originalPdfFileName);
         }
 
-        if (pdfPartsIterator.hasNext()) {
-            long startPagination = System.nanoTime();
-            List<Result<CursorProvider, PdfAttributes>> page = new LinkedList<>();
-            for (int i = 0; i < PDF_PART_PAGE_SIZE ; i++) {
-                PDDocument pdfDocumentPart = pdfPartsIterator.next();
+        List<Result<CursorProvider, PdfAttributes>> page = new LinkedList<>();
+        for (int i = 0; i < PDF_PART_PAGE_SIZE && pdfPartsIterator.hasNext() ; i++) {
+            PDDocument pdfDocumentPart = pdfPartsIterator.next();
+            try {
+                // Collect metadata
+                PdfAttributes attributes = new PdfAttributes();
+                attributes.setPageCount(pdfDocumentPart.getNumberOfPages());
+                // attributes.setFileSize(outputStream.size());
+                attributes.setFileName(this.pdfPartFileNameSuffix + String.format("%03d", this.pdfPartCounter) + ".pdf");
+
+                pdfPartCounter++;
+
+                page.add(Result.<CursorProvider, PdfAttributes>builder()
+                    .output((CursorProvider) streamingHelper.resolveCursorProvider(getPdfPartAsStream(pdfDocumentPart)))
+                    .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
+                    .attributes(attributes)
+                    .build());
+
+            } finally {
                 try {
-                    // Collect metadata
-                    PdfAttributes attributes = new PdfAttributes();
-                    attributes.setPageCount(pdfDocumentPart.getNumberOfPages());
-                    // attributes.setFileSize(outputStream.size());
-                    attributes.setFileName(this.pdfPartFileNameSuffix + String.format("%03d", this.pdfPartCounter) + ".pdf");
-
-                    pdfPartCounter++;
-
-                    page.add(Result.<CursorProvider, PdfAttributes>builder()
-                        .output((CursorProvider) streamingHelper.resolveCursorProvider(getPdfPartAsStream(pdfDocumentPart)))
-                        .mediaType(org.mule.runtime.api.metadata.MediaType.parse("application/pdf"))
-                        .attributes(attributes)
-                        .build());
-
-                } finally {
-                    try {
-                        pdfDocumentPart.close();
-                    } catch (IOException e) {
-                        logger.error("Exception closing the current PDF part resource.");
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    pdfDocumentPart.close();
+                } catch (IOException e) {
+                    logger.error("Exception closing the current PDF part resource.");
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
             }
-
-            logger.debug("Page of {} PDF parts sent in {}ms.", page.size(), 
-                                    TimeUtils.getElapsedMillis(startPagination));
-
-            return page;
-        } else {
-            return Collections.emptyList();
         }
+
+        logger.debug("Page of {} PDF parts sent in {}ms.", page.size(),
+                                TimeUtils.getElapsedMillis(startPagination));
+
+        return page;
 
     }
 
@@ -147,7 +143,11 @@ public class PdfPagingProvider
     @Override
     public Optional<Integer> getTotalResults(PdfInternalConnection dummyConnection) {
         logger.info("Total {} PDF parts to be processed for {}", this.totalPdfParts, this.originalPdfFileName);
-        return java.util.Optional.empty();  //of(this.totalPdfParts);
+        if (this.totalPdfParts == 0) {
+            return java.util.Optional.empty();
+        }
+
+        return java.util.Optional.of(this.totalPdfParts);
     }
 
     @Override

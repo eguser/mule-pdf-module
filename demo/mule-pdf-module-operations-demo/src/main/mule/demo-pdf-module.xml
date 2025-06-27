@@ -29,14 +29,14 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
       <file:matcher filenamePattern="*.pdf" directories="EXCLUDE" />
     </file:list>
     <foreach doc:name="For Each" doc:id="94f31c5b-c2e3-43e1-a69d-074593c3c375">
-      <logger level="INFO" doc:name="Logger" doc:id="54e1580c-5b2f-4dca-889c-d5099a673b9c" message='#["Read original PDF file " ++ (attributes.fileName default "")]' />
+      <logger level="INFO" doc:name="Logger" doc:id="54e1580c-5b2f-4dca-889c-d5099a673b9c" message='#["Will split PDF file " ++ (attributes.fileName default "")]' />
       <pdf:split-document doc:name="Split Document" doc:id="3ff53ee0-8858-46e0-9e09-a65b810de16b" fileName="#[attributes.fileName]" splitLabel="Part" labelSeparator="_" maxPages="#[vars.maxPages]" firstPages="#[vars.startWithPages]"/>
-      <foreach doc:name="For Each" doc:id="a407aedf-0ac9-468f-bdf1-3d9a5f12222e" collection="#[payload]">
+      <foreach doc:name="For Each PDF Part" doc:id="a407aedf-0ac9-468f-bdf1-3d9a5f12222e" collection="#[payload]">
         <async doc:name="Async" doc:id="4a22de2d-2930-441c-9bba-8700d5dadd8c" >
           <file:write doc:name="Write" doc:id="9c39f671-67c3-4faf-8f9a-c1c3b58d8ba8" path="#[p('directory.outputPath') ++ &quot;/&quot; ++ (attributes.fileName default &quot;missing_file_name&quot;)]" config-ref="File_Config" />
         </async>
       </foreach>
-      <logger level="INFO" doc:name="Logger" doc:id="af937d88-de41-4244-b13b-c60f2b4dc354" message='#["Done splitting file " ++ (attributes.fileName default "")]' />
+      <logger level="INFO" doc:name="Logger" doc:id="f8dca546-c9ad-4af3-a11b-bc4edd4f759f" message="Done processing all PDF parts"/>
     </foreach>
     <ee:transform doc:name="Status: Finished" doc:id="a5573840-e616-4784-aa1f-ecc5d14d909b" >
       <ee:message >

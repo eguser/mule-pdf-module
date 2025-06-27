@@ -68,7 +68,7 @@ public class SplitDocumentOperation {
         final PDDocument originalPdfDocument;
         final int originalPdfTotalPages;
         final Iterator<PDDocument> pdfPartsIterator;
-        final int outputPdfParts;
+        int outputPdfParts = 0;
         Iterable<PDDocument> originalPdfDocumentParts = new LinkedList<PDDocument>();
         byte[] startingPagesBytes = null;
         String pdfPartFileNamePrefix = FilenameUtils.removeExtension(fileName) + labelSeparator + splitLabel;
@@ -95,9 +95,9 @@ public class SplitDocumentOperation {
                     logger.debug("Starting {} pages for {} pre-serialized to {} bytes.",
                                     firstPages, fileName, startingPagesBytes.length);
                 }
-                logger.info("Created starting document in {}ms", TimeUtils.getElapsedMillis(operationStartTime));
+                logger.debug("Created starting document in {}ms", TimeUtils.getElapsedMillis(operationStartTime));
             } else {
-                logger.info("Will split {} every {} pages.", fileName, maxPages);
+                logger.debug("Will split {} every {} pages.", fileName, maxPages);
                 splitter.setSplitAtPage(maxPages);
             }
             originalPdfDocumentParts = splitter.split(originalPdfDocument);
@@ -105,18 +105,18 @@ public class SplitDocumentOperation {
             pdfPartsIterator = originalPdfDocumentParts.iterator();
 
         } finally {
-            logger.info("Splitting original PDf document took {}ms", TimeUtils.getElapsedMillis(operationStartTime));
+            logger.debug("Finished splitting original PDF document into {} parts in {}ms", outputPdfParts, TimeUtils.getElapsedMillis(operationStartTime));
         }
         
         if (outputPdfParts > 1) {
-            return new PdfPagingProvider(originalPdfDocument, pdfPartsIterator, outputPdfParts, operationStartTime,
-                    startingPagesBytes, fileName, pdfPartFileNamePrefix, streamingHelper);
+            return new PdfPagingProvider(originalPdfDocument, pdfPartsIterator, operationStartTime,
+                                        outputPdfParts, startingPagesBytes, fileName, pdfPartFileNamePrefix, streamingHelper);
         } else {
             return new PagingProvider<PdfInternalConnection, Result<CursorProvider, PdfAttributes>>() {
 
                 @Override
                 public void close(PdfInternalConnection arg0) throws MuleException {
-                    logger.info("Returning {} without splitting in {}ms", fileName,
+                    logger.warn("Returning original {} without splitting in {}ms", fileName,
                                 TimeUtils.getElapsedMillis(operationStartTime));
                 }
 
