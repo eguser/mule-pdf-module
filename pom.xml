@@ -26,7 +26,7 @@
     <openhtmltopdf.version>1.1.28</openhtmltopdf.version>
     <jsoup.version>1.20.1</jsoup.version>
     <mtf-tools.version>1.2.0</mtf-tools.version>
-    <mule.maven.plugin.version>4.5.0</mule.maven.plugin.version>
+    <mule.maven.plugin.version>4.5.3</mule.maven.plugin.version>
     <skipTests>true</skipTests>
     <munit.version>3.4.0</munit.version>
     <weave.assertions.version>1.2.1</weave.assertions.version>
