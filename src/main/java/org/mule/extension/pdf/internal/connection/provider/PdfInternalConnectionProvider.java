@@ -1,6 +1,6 @@
-package org.mule.pdf.extension.internal.connection.provider;
+package org.mule.extension.pdf.internal.connection.provider;
 
-import org.mule.pdf.extension.internal.connection.PdfInternalConnection;
+import org.mule.extension.pdf.internal.connection.PdfInternalConnection;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.connection.ConnectionProvider;
 import org.mule.runtime.api.connection.ConnectionValidationResult;

@@ -1,4 +1,4 @@
-package org.mule.pdf.extension.internal.operation;
+package org.mule.extension.pdf.internal.operation;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -10,8 +10,8 @@ import java.time.Instant;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
-import org.mule.pdf.extension.api.PdfAttributes;
-import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
+import org.mule.extension.pdf.api.PdfAttributes;
+import org.mule.extension.pdf.internal.metadata.BinaryMetadataResolver;
 import org.mule.runtime.extension.api.annotation.metadata.OutputResolver;
 import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.extension.api.annotation.param.MediaType;

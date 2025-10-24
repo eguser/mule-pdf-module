@@ -1,4 +1,4 @@
-package org.mule.pdf.extension.internal.operation;
+package org.mule.extension.pdf.internal.operation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -13,11 +13,11 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.mule.pdf.extension.api.PdfAttributes;
-import org.mule.pdf.extension.internal.connection.PdfInternalConnection;
-import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
-import org.mule.pdf.extension.internal.operation.paging.PdfPagingProvider;
-import org.mule.pdf.extension.internal.utils.TimeUtils;
+import org.mule.extension.pdf.api.PdfAttributes;
+import org.mule.extension.pdf.internal.connection.PdfInternalConnection;
+import org.mule.extension.pdf.internal.metadata.BinaryMetadataResolver;
+import org.mule.extension.pdf.internal.operation.paging.PdfPagingProvider;
+import org.mule.extension.pdf.internal.utils.TimeUtils;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.streaming.CursorProvider;
 import org.mule.runtime.api.util.Preconditions;

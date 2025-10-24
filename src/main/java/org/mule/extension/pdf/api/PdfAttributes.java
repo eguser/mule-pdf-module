@@ -1,4 +1,4 @@
-package org.mule.pdf.extension.api;
+package org.mule.extension.pdf.api;
 
 public class PdfAttributes {
     private int pageCount;

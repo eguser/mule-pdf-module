@@ -1,4 +1,4 @@
-package org.mule.pdf.extension;
+package org.mule.extension.pdf;
 
 import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 

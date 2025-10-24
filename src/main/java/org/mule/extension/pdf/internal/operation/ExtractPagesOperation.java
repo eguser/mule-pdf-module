@@ -1,4 +1,4 @@
-package org.mule.pdf.extension.internal.operation;
+package org.mule.extension.pdf.internal.operation;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -12,8 +12,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.mule.pdf.extension.api.PdfAttributes;
-import org.mule.pdf.extension.internal.metadata.BinaryMetadataResolver;
+import org.mule.extension.pdf.api.PdfAttributes;
+import org.mule.extension.pdf.internal.metadata.BinaryMetadataResolver;
 import org.mule.runtime.extension.api.annotation.metadata.TypeResolver;
 import org.mule.runtime.extension.api.annotation.param.Content;
 import org.mule.runtime.extension.api.annotation.param.MediaType;

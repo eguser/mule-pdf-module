@@ -1,4 +1,4 @@
-package org.mule.pdf.extension.internal.param;
+package org.mule.extension.pdf.internal.param;
 
 import org.mule.runtime.extension.api.annotation.param.Parameter;
 import org.mule.runtime.extension.api.annotation.param.display.DisplayName;

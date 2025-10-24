@@ -1,4 +1,4 @@
-package org.mule.pdf.extension.internal.operation.paging;
+package org.mule.extension.pdf.internal.operation.paging;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,9 +14,9 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.mule.pdf.extension.api.PdfAttributes;
-import org.mule.pdf.extension.internal.connection.PdfInternalConnection;
-import org.mule.pdf.extension.internal.utils.TimeUtils;
+import org.mule.extension.pdf.api.PdfAttributes;
+import org.mule.extension.pdf.internal.connection.PdfInternalConnection;
+import org.mule.extension.pdf.internal.utils.TimeUtils;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.streaming.CursorProvider;
 import org.mule.runtime.extension.api.runtime.operation.Result;

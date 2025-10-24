@@ -1,11 +1,11 @@
-package org.mule.pdf.extension.internal;
+package org.mule.extension.pdf.internal;
 
 import static org.mule.runtime.api.meta.Category.COMMUNITY;
 
-import org.mule.pdf.extension.internal.connection.provider.PdfInternalConnectionProvider;
-import org.mule.pdf.extension.internal.operation.ExtractPagesOperation;
-import org.mule.pdf.extension.internal.operation.HtmlToPdfOperation;
-import org.mule.pdf.extension.internal.operation.SplitDocumentOperation;
+import org.mule.extension.pdf.internal.connection.provider.PdfInternalConnectionProvider;
+import org.mule.extension.pdf.internal.operation.ExtractPagesOperation;
+import org.mule.extension.pdf.internal.operation.HtmlToPdfOperation;
+import org.mule.extension.pdf.internal.operation.SplitDocumentOperation;
 import org.mule.runtime.extension.api.annotation.Extension;
 import org.mule.runtime.extension.api.annotation.Operations;
 import org.mule.runtime.extension.api.annotation.connectivity.ConnectionProviders;

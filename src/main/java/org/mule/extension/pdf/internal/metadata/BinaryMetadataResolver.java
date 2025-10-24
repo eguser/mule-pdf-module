@@ -1,7 +1,7 @@
-package org.mule.pdf.extension.internal.metadata;
+package org.mule.extension.pdf.internal.metadata;
 
 import org.mule.metadata.api.model.MetadataType;
-import org.mule.pdf.extension.internal.PdfModule;
+import org.mule.extension.pdf.internal.PdfModule;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.metadata.MetadataContext;
 import org.mule.runtime.api.metadata.MetadataResolvingException;

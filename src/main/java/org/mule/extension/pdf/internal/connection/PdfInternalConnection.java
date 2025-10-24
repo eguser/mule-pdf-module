@@ -1,4 +1,4 @@
-package org.mule.pdf.extension.internal.connection;
+package org.mule.extension.pdf.internal.connection;
 
 public class PdfInternalConnection {
     public PdfInternalConnection() {

@@ -1,4 +1,4 @@
-package org.mule.pdf.extension.internal.utils;
+package org.mule.extension.pdf.internal.utils;
 
 public final class TimeUtils {
 

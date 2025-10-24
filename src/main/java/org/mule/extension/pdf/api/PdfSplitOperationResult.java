@@ -1,4 +1,4 @@
-package org.mule.pdf.extension.api;
+package org.mule.extension.pdf.api;
 
 import java.io.InputStream;
 
